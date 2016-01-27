@@ -36,6 +36,9 @@ var (
 	flName = cli.StringFlag{
 		Name:  "name",
 		Usage: "Name of the extension e.g. FooExtension"}
+	flStorageAccount = cli.StringFlag{
+		Name:  "storage-account",
+		Usage: "Name of an existing storage account to be used in uploading the extension package temporarily."}
 )
 
 func main() {
@@ -80,11 +83,8 @@ func main() {
 				flSubsID,
 				flSubsCert,
 				flManifest,
-				cli.StringFlag{
-					Name:  "storage-account",
-					Usage: "Name of an existing storage account to be used in uploading the extension package temporarily.",
-				}},
-			Action: deleteVersion},
+				flStorageAccount},
+			Action: createExtension},
 		{Name: "list-versions",
 			Usage:  "Lists all published extension versions for subscription",
 			Flags:  []cli.Flag{flSubsID, flSubsCert},
