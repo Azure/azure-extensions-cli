@@ -16,10 +16,10 @@ func listVersions(c *cli.Context) {
 		log.Fatal("Request failed: %v", err)
 	}
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Namespace", "Type", "Version", "Replication Completed", "Regions"})
+	table.SetHeader([]string{"Namespace", "Type", "Version", "Replicated?", "Internal?", "Regions"})
 	data := [][]string{}
 	for _, e := range v.Extensions {
-		data = append(data, []string{e.Ns, e.Name, e.Version, fmt.Sprintf("%v", e.ReplicationCompleted), e.Regions})
+		data = append(data, []string{e.Ns, e.Name, e.Version, fmt.Sprintf("%v", e.ReplicationCompleted), fmt.Sprintf("%v", e.IsInternal), e.Regions})
 	}
 	table.AppendBulk(data)
 	table.Render()

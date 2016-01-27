@@ -30,6 +30,7 @@ type ListVersionsResponse struct {
 		Version              string `xml:Version"`
 		ReplicationCompleted bool   `xml:"ReplicationCompleted"`
 		Regions              string `xml:"Regions"`
+		IsInternal           bool   `xml:"IsInternalExtension"`
 	} `xml:"ExtensionImage"`
 }
 
@@ -64,6 +65,12 @@ func (c ExtensionsClient) GetReplicationStatus(publisherNamespace, extension, ve
 
 	err = xml.Unmarshal(response, &l)
 	return l, err
+}
+
+// CreateExtension sends the given extension handler definition XML to create a
+// brand new extension (not a version). Returned operation ID should be polled for result.
+func (c ExtensionsClient) CreateExtension(data []byte) (management.OperationID, error) {
+	return c.client.SendAzurePostRequest("services/extensions", data)
 }
 
 // UpdateExtension sends the given extension handler definition XML to issue and update

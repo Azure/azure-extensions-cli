@@ -17,10 +17,14 @@ func init() {
 	log.SetOutput(os.Stderr)
 }
 
+// Common CLI flags
 var (
+	flPackage = cli.StringFlag{
+		Name:  "package",
+		Usage: "Path of extension package (.zip)"}
 	flManifest = cli.StringFlag{
 		Name:  "manifest",
-		Usage: "Path of XML manifest file (output of 'new-extension-manifest')"}
+		Usage: "Path of extension manifest file (XML output of 'new-extension-manifest')"}
 	flSubsID = cli.StringFlag{
 		Name:  "subscription-id",
 		Usage: "Subscription ID for the publisher subscription"}
@@ -78,12 +82,8 @@ func main() {
 					Usage: "Extension platform e.g. 'Linux'"},
 			}},
 		{Name: "new-extension",
-			Usage: "Creates a new type of extension, not for releasing new versions.",
-			Flags: []cli.Flag{
-				flSubsID,
-				flSubsCert,
-				flManifest,
-				flStorageAccount},
+			Usage:  "Creates a new type of extension, not for releasing new versions.",
+			Flags:  []cli.Flag{flSubsID, flSubsCert, flManifest, flStorageAccount, flPackage},
 			Action: createExtension},
 		{Name: "list-versions",
 			Usage:  "Lists all published extension versions for subscription",
@@ -108,7 +108,7 @@ func main() {
 func mkClient(subscriptionID, certFile string) ExtensionsClient {
 	b, err := ioutil.ReadFile(certFile)
 	if err != nil {
-		log.Fatal("Cannot read certificate %s: %v", certFile, err)
+		log.Fatalf("Cannot read certificate %s: %v", certFile, err)
 	}
 	cl, err := NewClient(subscriptionID, b)
 	if err != nil {
@@ -120,7 +120,7 @@ func mkClient(subscriptionID, certFile string) ExtensionsClient {
 func checkFlag(c *cli.Context, fl string) string {
 	v := c.String(fl)
 	if v == "" {
-		log.Fatalf("argument %s must be provided", fl)
+		log.Fatalf("argument %q must be provided", fl)
 	}
 	return v
 }
