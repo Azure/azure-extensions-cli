@@ -26,6 +26,15 @@ var (
 	flSubsCert = cli.StringFlag{
 		Name:  "subscription-cert",
 		Usage: "Path of subscription management certificate (.pem) file"}
+	flVersion = cli.StringFlag{
+		Name:  "version",
+		Usage: "Version of the extension package"}
+	flNamespace = cli.StringFlag{
+		Name:  "namespace",
+		Usage: "Publisher namespace e.g. Microsoft.Azure.Extensions"}
+	flName = cli.StringFlag{
+		Name:  "name",
+		Usage: "Name of the extension e.g. FooExtension"}
 )
 
 func main() {
@@ -38,12 +47,8 @@ func main() {
 			Usage:  "Creates an XML file used to publish or update extension.",
 			Action: newExtensionManifest,
 			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:  "namespace",
-					Usage: "Publisher namespace e.g. Microsoft.Azure.Extensions"},
-				cli.StringFlag{
-					Name:  "name",
-					Usage: "Name of the extension e.g. FooExtension"},
+				flNamespace,
+				flName,
 				cli.StringFlag{
 					Name:  "version",
 					Usage: "Version of the extension package e.g. 1.0.0"},
@@ -75,6 +80,11 @@ func main() {
 			Flags:  []cli.Flag{flSubsID, flSubsCert},
 			Action: listVersions,
 		},
+		{Name: "replication-status",
+			Usage:  "Retrieves replication status for an uploaded extension package",
+			Flags:  []cli.Flag{flSubsID, flSubsCert, flNamespace, flName, flVersion},
+			Action: replicationStatus,
+		},
 	}
 	app.RunAndExitOnError()
 }
@@ -87,8 +97,8 @@ func newExtensionManifest(c *cli.Context) {
 		ref *string
 		fl  string
 	}{
-		{&p.Namespace, "namespace"},
-		{&p.Name, "name"},
+		{&p.Namespace, flNamespace.Name},
+		{&p.Name, flName.Name},
 		{&p.Version, "version"},
 		{&p.Label, "label"},
 		{&p.Description, "description"},
@@ -144,8 +154,25 @@ func listVersions(c *cli.Context) {
 	for _, e := range v.Extensions {
 		data = append(data, []string{e.Ns, e.Name, e.Version, fmt.Sprintf("%v", e.ReplicationCompleted), e.Regions})
 	}
-	table.SetBorder(false) // Set Border to false
-	table.AppendBulk(data) // Add Bulk Data
+	table.AppendBulk(data)
+	table.Render()
+}
+
+func replicationStatus(c *cli.Context) {
+	cl := mkClient(checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
+	ns, name, version := checkFlag(c, flNamespace.Name), checkFlag(c, flName.Name), checkFlag(c, flVersion.Name)
+	log.Debug("Requesting replication status.")
+	rs, err := cl.GetReplicationStatus(ns, name, version)
+	if err != nil {
+		log.Fatal("Cannot fetch replication status: %v", err)
+	}
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Location", "Status"})
+	data := [][]string{}
+	for _, s := range rs.Statuses {
+		data = append(data, []string{s.Location, s.Status})
+	}
+	table.AppendBulk(data)
 	table.Render()
 }
 

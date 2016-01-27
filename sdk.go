@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/xml"
+	"fmt"
 
 	"github.com/Azure/azure-sdk-for-go/management"
 )
@@ -30,6 +31,27 @@ func (c ExtensionsClient) ListVersions() (ListVersionsResponse, error) {
 	var l ListVersionsResponse
 
 	response, err := c.client.SendAzureGetRequest("services/publisherextensions")
+	if err != nil {
+		return l, err
+	}
+
+	err = xml.Unmarshal(response, &l)
+	return l, err
+}
+
+type ReplicationStatusResponse struct {
+	XMLName  xml.Name `xml:"ReplicationStatusList"`
+	Statuses []struct {
+		Location string `xml:"Location"`
+		Status   string `xml:"Status"`
+	} `xml:"ReplicationStatus"`
+}
+
+func (c ExtensionsClient) GetReplicationStatus(publisherNamespace, extension, version string) (ReplicationStatusResponse, error) {
+	var l ReplicationStatusResponse
+
+	response, err := c.client.SendAzureGetRequest(fmt.Sprintf("services/extensions/%s/%s/%s/replicationstatus",
+		publisherNamespace, extension, version))
 	if err != nil {
 		return l, err
 	}
