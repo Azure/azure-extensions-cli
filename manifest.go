@@ -9,8 +9,12 @@ import (
 )
 
 func newExtensionManifest(c *cli.Context) {
+	cl := mkClient(checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
+	storageAccount := checkFlag(c, flStorageAccount.Name)
+	extensionPkg := checkFlag(c, flPackage.Name)
+
 	var p struct {
-		Namespace, Name, Version, Label, Description, Eula, Privacy, Homepage, Company, OS string
+		Namespace, Name, Version, BlobURL, Label, Description, Eula, Privacy, Homepage, Company, OS string
 	}
 	flags := []struct {
 		ref *string
@@ -30,6 +34,15 @@ func newExtensionManifest(c *cli.Context) {
 	for _, f := range flags {
 		*f.ref = checkFlag(c, f.fl)
 	}
+
+	// Upload extension blob
+	blobURL, err := uploadBlob(cl, storageAccount, extensionPkg)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Debugf("Extension package uploaded to: %s", blobURL)
+	p.BlobURL = blobURL
+
 	// doing a text template is easier and let us create comments (xml encoder can't)
 	// that are used as placeholders later on.
 	manifestXml := `<?xml version="1.0" encoding="utf-8" ?>
@@ -40,7 +53,7 @@ func newExtensionManifest(c *cli.Context) {
   <Version>{{.Version}}</Version>
   <Label>{{.Label}}</Label>
   <HostingResources>VmRole</HostingResources>
-  <MediaLink>%BLOB_URL%</MediaLink>
+  <MediaLink>{{.BlobURL}}</MediaLink>
   <Description>{{.Description}}</Description>
   <IsInternalExtension>true</IsInternalExtension>
   <Eula>{{.Eula}}</Eula>

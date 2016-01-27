@@ -13,7 +13,7 @@ func listVersions(c *cli.Context) {
 	cl := mkClient(checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
 	v, err := cl.ListVersions()
 	if err != nil {
-		log.Fatal("Request failed: %v", err)
+		log.Fatalf("Request failed: %v", err)
 	}
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Namespace", "Type", "Version", "Replicated?", "Internal?", "Regions"})

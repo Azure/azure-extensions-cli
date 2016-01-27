@@ -26,20 +26,25 @@ var (
 		Name:  "manifest",
 		Usage: "Path of extension manifest file (XML output of 'new-extension-manifest')"}
 	flSubsID = cli.StringFlag{
-		Name:  "subscription-id",
-		Usage: "Subscription ID for the publisher subscription"}
+		Name:   "subscription-id",
+		Usage:  "Subscription ID for the publisher subscription",
+		EnvVar: "SUBSCRIPTION_ID",
+	}
 	flSubsCert = cli.StringFlag{
-		Name:  "subscription-cert",
-		Usage: "Path of subscription management certificate (.pem) file"}
+		Name:   "subscription-cert",
+		Usage:  "Path of subscription management certificate (.pem) file",
+		EnvVar: "SUBSCRIPTION_CERT"}
 	flVersion = cli.StringFlag{
 		Name:  "version",
 		Usage: "Version of the extension package e.g. 1.0.0"}
 	flNamespace = cli.StringFlag{
-		Name:  "namespace",
-		Usage: "Publisher namespace e.g. Microsoft.Azure.Extensions"}
+		Name:   "namespace",
+		Usage:  "Publisher namespace e.g. Microsoft.Azure.Extensions",
+		EnvVar: "EXTENSION_NAMESPACE"}
 	flName = cli.StringFlag{
-		Name:  "name",
-		Usage: "Name of the extension e.g. FooExtension"}
+		Name:   "name",
+		Usage:  "Name of the extension e.g. FooExtension",
+		EnvVar: "EXTENSION_NAME"}
 	flStorageAccount = cli.StringFlag{
 		Name:  "storage-account",
 		Usage: "Name of an existing storage account to be used in uploading the extension package temporarily."}
@@ -56,9 +61,8 @@ func main() {
 			Usage:  "Creates an XML file used to publish or update extension.",
 			Action: newExtensionManifest,
 			Flags: []cli.Flag{
-				flNamespace,
-				flName,
-				flVersion,
+				flSubsID, flSubsCert, flPackage, flStorageAccount,
+				flNamespace, flName, flVersion,
 				cli.StringFlag{
 					Name:  "label",
 					Usage: "Human readable name of the extension"},
@@ -83,8 +87,12 @@ func main() {
 			}},
 		{Name: "new-extension",
 			Usage:  "Creates a new type of extension, not for releasing new versions.",
-			Flags:  []cli.Flag{flSubsID, flSubsCert, flManifest, flStorageAccount, flPackage},
+			Flags:  []cli.Flag{flSubsID, flSubsCert, flManifest},
 			Action: createExtension},
+		{Name: "new-extension-version",
+			Usage:  "Publishes a new type of extension internally.",
+			Flags:  []cli.Flag{flSubsID, flSubsCert, flManifest},
+			Action: updateExtension},
 		{Name: "list-versions",
 			Usage:  "Lists all published extension versions for subscription",
 			Flags:  []cli.Flag{flSubsID, flSubsCert},
