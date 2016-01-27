@@ -11,14 +11,14 @@ import (
 )
 
 func promoteToFirstSlice(c *cli.Context) {
-	if err := promoteToRegions(c, mkRegionElement(
+	if err := promoteExtension(c, mkRegionElement(
 		checkFlag(c, flRegion1.Name))); err != nil {
 		log.Fatal(err)
 	}
 	log.Info("Extension is promoted to PROD in one region. See replication-status.")
 }
 func promoteToSecondSlice(c *cli.Context) {
-	if err := promoteToRegions(c, mkRegionElement(
+	if err := promoteExtension(c, mkRegionElement(
 		checkFlag(c, flRegion1.Name),
 		checkFlag(c, flRegion2.Name))); err != nil {
 		log.Fatal(err)
@@ -26,17 +26,16 @@ func promoteToSecondSlice(c *cli.Context) {
 	log.Info("Extension is promoted to PROD in two regions. See replication-status.")
 }
 
-func promoteToProd(c *cli.Context) {
+func promoteToAllRegions(c *cli.Context) {
 	regions := `` // replace placeholder with empty string to omit the element.
-	if err := promoteToRegions(c, regions); err != nil {
+	if err := promoteExtension(c, regions); err != nil {
 		log.Fatal(err)
 	}
 	log.Info("Extension is promoted to all regions. See replication-status.")
 }
 
-func promoteToRegions(c *cli.Context, regionsXML string) error {
-	regions := mkRegionElement(checkFlag(c, flRegion1.Name))
-	b, err := updateManifestRegions(checkFlag(c, flManifest.Name), regions)
+func promoteExtension(c *cli.Context, regionsXML string) error {
+	b, err := updateManifestRegions(checkFlag(c, flManifest.Name), regionsXML)
 	if err != nil {
 		return err
 	}
