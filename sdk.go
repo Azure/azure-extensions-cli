@@ -11,6 +11,7 @@ import (
 
 const (
 	operationStatusPollingInterval = time.Second * 10
+	apiVersion                     = "2015-04-01"
 )
 
 type ExtensionsClient struct {
@@ -18,7 +19,9 @@ type ExtensionsClient struct {
 }
 
 func NewClient(subscriptionID string, cert []byte) (ExtensionsClient, error) {
-	cl, err := management.NewClient(subscriptionID, cert)
+	cfg := management.DefaultConfig()
+	cfg.APIVersion = apiVersion
+	cl, err := management.NewClientFromConfig(subscriptionID, cert, cfg)
 	return ExtensionsClient{cl}, err
 }
 

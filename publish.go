@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/Azure/azure-sdk-for-go/management"
@@ -17,17 +18,17 @@ const (
 	containerName = "extension-packages"
 )
 
-func publishExtension(c *cli.Context, operationName string, op func([]byte) (management.OperationID, error)) error {
-	// Read manifest
-	b, err := ioutil.ReadFile(checkFlag(c, flManifest.Name))
-	if err != nil {
-		return fmt.Errorf("Error reading manifest: %v", err)
-	}
+func publishExtension(c *cli.Context, operationName string, manifest []byte, op func([]byte) (management.OperationID, error)) error {
+	log.Infof("%s operation starting...", operationName)
 
-	// Initiate operation and poll
-	log.Debugf("%s operation starting...", operationName)
+	mPath, err := saveManifestForDebugging(manifest)
+	if err != nil {
+		return fmt.Errorf("Error saving manifest for debugging: %v", err)
+	}
+	log.Debugf("Saving used manifest for debugging: %s", mPath)
+
 	cl := mkClient(checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
-	opID, err := op(b)
+	opID, err := op(manifest)
 	if err != nil {
 		return fmt.Errorf("Error: %v", err)
 	}
@@ -39,16 +40,45 @@ func publishExtension(c *cli.Context, operationName string, op func([]byte) (man
 	return nil
 }
 
+func saveManifestForDebugging(contents []byte) (string, error) {
+	dir, err := ioutil.TempDir("", "extension-manifests")
+	if err != nil {
+		return "", err
+	}
+	f, err := ioutil.TempFile(dir, "manifest")
+	if err != nil {
+		return "", err
+	}
+	if _, err := f.Write(contents); err != nil {
+		return "", err
+	}
+	fi, err := f.Stat()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(dir, fi.Name()), nil
+}
+
+func publishExtensionFromManifestFile(c *cli.Context, operationName, manifestPath string, op func([]byte) (management.OperationID, error)) error {
+	b, err := ioutil.ReadFile(manifestPath)
+	if err != nil {
+		return fmt.Errorf("Error reading manifest: %v", err)
+	}
+	return publishExtension(c, operationName, b, op)
+}
+
 func createExtension(c *cli.Context) {
 	cl := mkClient(checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
-	if err := publishExtension(c, "CreateExtension", cl.CreateExtension); err != nil {
+	if err := publishExtensionFromManifestFile(c, "CreateExtension",
+		checkFlag(c, flManifest.Name), cl.CreateExtension); err != nil {
 		log.Fatal(err)
 	}
 }
 
 func updateExtension(c *cli.Context) {
 	cl := mkClient(checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
-	if err := publishExtension(c, "UpdateExtension", cl.UpdateExtension); err != nil {
+	if err := publishExtensionFromManifestFile(c, "UpdateExtension", checkFlag(c, flManifest.Name),
+		cl.UpdateExtension); err != nil {
 		log.Fatal(err)
 	}
 }
