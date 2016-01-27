@@ -12,6 +12,10 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
+const (
+	version = "1.0.0-beta1"
+)
+
 func init() {
 	log.SetLevel(log.DebugLevel)
 	log.SetOutput(os.Stderr)
@@ -41,6 +45,7 @@ var (
 func main() {
 	app := cli.NewApp()
 	app.Name = "azure-extensions-cli"
+	app.Version = version
 	app.Usage = "This tool is designed for Microsoft internal extension publishers to release, update and manage Virtual Machine extensions."
 	app.Authors = []cli.Author{{Name: "Ahmet Alp Balkan", Email: "ahmetb at microsoft döt com"}}
 	app.Commands = []cli.Command{
