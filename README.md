@@ -1,2 +1,56 @@
 # azure-extensions-cli
-This tool is intended only for publishers of Azure VM extensions
+This tool is intended only for publishers of Azure VM extensions.
+If you are not an Azure employee, there is nothing here for you.
+
+This command line interface is a simple wrapper on top of RDFE Extension
+Publishing APIs.
+
+With this command-line interface you can:
+
+- Upload an extension .zip package as a new extension or a new version.
+- Promote versions to required rollout slices.
+- List all extension versions published.
+- Get replication status of an extension version.
+- Mark a version as internal and delete a version.
+
+# Usage
+
+Make sure you have:
+
+- a subscription ID that has extension publishing enabled
+- and a .pem file used as the subscription management certificate
+
+Instead of passing these arguments over and over to the CLI,
+you can simply set environment variables:
+
+    export SUBSCRIPTION_ID=xxxx-xxxxx-xxxxxx...
+    export SUBSCRIPTION_CERT=/path/to/cert.pem
+
+If you are always operating on the same extension, you can also set:
+
+    export EXTENSION_NAMESPACE=Microsoft.Azure.Extensions
+    export EXTENSION_NAME=FooExtension
+
+Then use help to explore the commands and arguments.
+
+    ./azure-extensions-cli --help
+
+> **NOTE:** If you are not familiar with extension publishing
+process (i.e. slices, behaviors of extension pipeline) you should read
+the relevant documentation first.
+
+# Building
+
+This project is written in Go, make sure you have Go **1.5+** installed
+and run:
+
+     export GO15VENDOREXPERIMENT=1
+     go build
+
+# Author
+
+Ahmet Alp Balkan
+
+# License
+
+See [LICENSE](LICENSE).
