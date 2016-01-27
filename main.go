@@ -1,12 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"text/template"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
+	"github.com/olekukonko/tablewriter"
 )
 
 func init() {
@@ -136,7 +138,15 @@ func listVersions(c *cli.Context) {
 	if err != nil {
 		log.Fatal("Request failed: %v", err)
 	}
-	log.Debugf("Found %d extensions", len(v.Extensions))
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Namespace", "Type", "Version", "Replication Completed", "Regions"})
+	data := [][]string{}
+	for _, e := range v.Extensions {
+		data = append(data, []string{e.Ns, e.Name, e.Version, fmt.Sprintf("%v", e.ReplicationCompleted), e.Regions})
+	}
+	table.SetBorder(false) // Set Border to false
+	table.AppendBulk(data) // Add Bulk Data
+	table.Render()
 }
 
 func mkClient(subscriptionID, certFile string) ExtensionsClient {

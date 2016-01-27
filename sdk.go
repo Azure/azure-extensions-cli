@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/xml"
-	"time"
 
 	"github.com/Azure/azure-sdk-for-go/management"
 )
@@ -19,12 +18,11 @@ func NewClient(subscriptionID string, cert []byte) (ExtensionsClient, error) {
 type ListVersionsResponse struct {
 	XMLName    xml.Name `xml:"ExtensionImages"`
 	Extensions []struct {
-		Ns                   string    `xml:"ProviderNameSpace"`
-		Name                 string    `xml:Type"`
-		Version              string    `xml:Version"`
-		ReplicationCompleted bool      `xml:"ReplicationCompleted"`
-		Regions              string    `xml:"Regions"`
-		PublishedDate        time.Time `xml:"PublishedDate"`
+		Ns                   string `xml:"ProviderNameSpace"`
+		Name                 string `xml:"Type"`
+		Version              string `xml:Version"`
+		ReplicationCompleted bool   `xml:"ReplicationCompleted"`
+		Regions              string `xml:"Regions"`
 	} `xml:"ExtensionImage"`
 }
 
