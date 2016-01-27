@@ -1,4 +1,4 @@
-# azure-extensions-cli
+# azure-extensions-cli ("Project Shanghai")
 This tool is intended only for publishers of Azure VM extensions.
 If you are not an Azure employee, there is nothing here for you.
 
