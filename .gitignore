@@ -2,6 +2,7 @@
 *~
 *.swp
 docker-ext-commands.txt
+bin/
 
 # Compiled binary
 azure-extensions-cli

@@ -79,6 +79,12 @@ and run:
      export GO15VENDOREXPERIMENT=1
      go build
 
+To cross compile:
+    
+     go get github.com/mitchellh/gox
+     export PATH=$PATH:$GOPATH/bin
+     gox -arch="amd64" -os="windows linux darwin" -output "bin/{{.OS}}-{{.Arch}}_{{.Dir}}"
+
 ## Author
 
 Ahmet Alp Balkan
