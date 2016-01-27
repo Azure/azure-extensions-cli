@@ -105,7 +105,8 @@ func newExtensionManifest(c *cli.Context) {
   <CompanyName>{{.Company}}</CompanyName>
   <SupportedOS>{{.OS}}</SupportedOS>
   <!--%REGIONS%-->
-</ExtensionImage>`
+</ExtensionImage>
+`
 	tpl, err := template.New("manifest").Parse(manifestXml)
 	if err != nil {
 		log.Fatalf("template parse error: %v", err)
