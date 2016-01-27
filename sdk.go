@@ -3,8 +3,14 @@ package main
 import (
 	"encoding/xml"
 	"fmt"
+	"time"
 
 	"github.com/Azure/azure-sdk-for-go/management"
+	log "github.com/Sirupsen/logrus"
+)
+
+const (
+	operationStatusPollingInterval = time.Second * 10
 )
 
 type ExtensionsClient struct {
@@ -58,4 +64,41 @@ func (c ExtensionsClient) GetReplicationStatus(publisherNamespace, extension, ve
 
 	err = xml.Unmarshal(response, &l)
 	return l, err
+}
+
+// UpdateExtension sends the given extension handler definition XML to issue and update
+// request. Returned operation ID should be polled.
+func (c ExtensionsClient) UpdateExtension(data []byte) (management.OperationID, error) {
+	return c.client.SendAzurePutRequest("services/extensions?action=update", "text/xml", data)
+}
+
+func (c ExtensionsClient) WaitForOperation(opID management.OperationID) error {
+	lg := log.WithField("x-ms-operation-id", opID)
+	lg.Debug("Waiting for operation to complete.")
+	for {
+		op, err := c.client.GetOperationStatus(opID)
+		if err != nil {
+			log.Errorf("Error fetching operation status: %v", err)
+			continue // don't return because of GetOperationStatus flakiness.
+		}
+
+		switch op.Status {
+		case management.OperationStatusSucceeded:
+			lg.Debug("Operation successful.")
+			return nil
+		case management.OperationStatusFailed:
+			lg.Debug("Operation failed.")
+			if op.Error != nil {
+				return op.Error
+			}
+			return fmt.Errorf("Azure Operation (x-ms-request-id=%s) has failed", opID)
+		case management.OperationStatusInProgress:
+			lg.Debug("Operation in progress...")
+			time.Sleep(operationStatusPollingInterval)
+			continue
+		default:
+			lg.Errorf("Encoutered unhandled operation status: %v", op.Status)
+			return fmt.Errorf("Unhandled operation status returned from API: %s", op.Status)
+		}
+	}
 }

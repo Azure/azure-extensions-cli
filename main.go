@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -28,7 +29,7 @@ var (
 		Usage: "Path of subscription management certificate (.pem) file"}
 	flVersion = cli.StringFlag{
 		Name:  "version",
-		Usage: "Version of the extension package"}
+		Usage: "Version of the extension package e.g. 1.0.0"}
 	flNamespace = cli.StringFlag{
 		Name:  "namespace",
 		Usage: "Publisher namespace e.g. Microsoft.Azure.Extensions"}
@@ -49,9 +50,7 @@ func main() {
 			Flags: []cli.Flag{
 				flNamespace,
 				flName,
-				cli.StringFlag{
-					Name:  "version",
-					Usage: "Version of the extension package e.g. 1.0.0"},
+				flVersion,
 				cli.StringFlag{
 					Name:  "label",
 					Usage: "Human readable name of the extension"},
@@ -85,6 +84,11 @@ func main() {
 			Flags:  []cli.Flag{flSubsID, flSubsCert, flNamespace, flName, flVersion},
 			Action: replicationStatus,
 		},
+		{Name: "unpublish-version",
+			Usage:  "Marks the specified version of the extension internal. Does not delete.",
+			Flags:  []cli.Flag{flSubsID, flSubsCert, flNamespace, flName, flVersion},
+			Action: unpublishVersion,
+		},
 	}
 	app.RunAndExitOnError()
 }
@@ -99,7 +103,7 @@ func newExtensionManifest(c *cli.Context) {
 	}{
 		{&p.Namespace, flNamespace.Name},
 		{&p.Name, flName.Name},
-		{&p.Version, "version"},
+		{&p.Version, flVersion.Name},
 		{&p.Label, "label"},
 		{&p.Description, "description"},
 		{&p.Eula, "eula-url"},
@@ -174,6 +178,46 @@ func replicationStatus(c *cli.Context) {
 	}
 	table.AppendBulk(data)
 	table.Render()
+}
+
+func unpublishVersion(c *cli.Context) {
+	p := struct {
+		Namespace, Name, Version string
+	}{
+		Namespace: checkFlag(c, flNamespace.Name),
+		Name:      checkFlag(c, flName.Name),
+		Version:   checkFlag(c, flVersion.Name)}
+
+	manifestXml := `<?xml version="1.0" encoding="utf-8" ?>
+<ExtensionImage xmlns="http://schemas.microsoft.com/windowsazure"  xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- WARNING: Ordering of fields matter in this file. -->
+  <ProviderNameSpace>{{.Namespace}}</ProviderNameSpace>
+  <Type>{{.Name}}</Type>
+  <Version>{{.Version}}</Version>
+  <IsInternalExtension>true</IsInternalExtension>
+  <IsJsonExtension>true</IsJsonExtension>
+</ExtensionImage>`
+	tpl, err := template.New("unregisterManifest").Parse(manifestXml)
+	if err != nil {
+		log.Fatalf("template parse error: %v", err)
+	}
+
+	var b bytes.Buffer
+	if err = tpl.Execute(&b, p); err != nil {
+		log.Fatalf("template execute error: %v", err)
+	}
+
+	cl := mkClient(checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
+	op, err := cl.UpdateExtension(b.Bytes())
+	if err != nil {
+		log.Fatalf("UpdateExtension failed: %v", err)
+	}
+	lg := log.WithField("x-ms-operation-id", op)
+	lg.Info("UpdateExtension operation started.")
+	if err := cl.WaitForOperation(op); err != nil {
+		lg.Fatalf("UpdateExtension failed: %v", err)
+	}
+	lg.Info("UpdateExtension operation finished.")
 }
 
 func mkClient(subscriptionID, certFile string) ExtensionsClient {
