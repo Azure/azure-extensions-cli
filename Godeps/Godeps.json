@@ -2,9 +2,14 @@
 	"ImportPath": "github.com/ahmetalpbalkan/azure-extensions-cli",
 	"GoVersion": "go1.5",
 	"Packages": [
-		"."
+		"./..."
 	],
 	"Deps": [
+		{
+			"ImportPath": "github.com/Azure/azure-sdk-for-go/Godeps/_workspace/src/golang.org/x/crypto/pkcs12",
+			"Comment": "v1.2-315-g1cb9dff",
+			"Rev": "1cb9dff8c37b2918ad1ebd7b294d01100a153d27"
+		},
 		{
 			"ImportPath": "github.com/Azure/azure-sdk-for-go/core/http",
 			"Comment": "v1.2-315-g1cb9dff",
@@ -17,6 +22,11 @@
 		},
 		{
 			"ImportPath": "github.com/Azure/azure-sdk-for-go/management",
+			"Comment": "v1.2-315-g1cb9dff",
+			"Rev": "1cb9dff8c37b2918ad1ebd7b294d01100a153d27"
+		},
+		{
+			"ImportPath": "github.com/Azure/azure-sdk-for-go/storage",
 			"Comment": "v1.2-315-g1cb9dff",
 			"Rev": "1cb9dff8c37b2918ad1ebd7b294d01100a153d27"
 		},
@@ -38,10 +48,6 @@
 		{
 			"ImportPath": "github.com/olekukonko/tablewriter",
 			"Rev": "cca8bbc0798408af109aaaa239cbd2634846b340"
-		},
-		{
-			"ImportPath": "golang.org/x/crypto/pkcs12",
-			"Rev": "1f22c0103821b9390939b6776727195525381532"
 		},
 		{
 			"ImportPath": "golang.org/x/sys/unix",
