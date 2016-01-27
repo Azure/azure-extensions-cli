@@ -31,6 +31,15 @@
 			"Rev": "f9cc3001e04f9783cb4ad08ca6791aa07134787c"
 		},
 		{
+			"ImportPath": "github.com/mattn/go-runewidth",
+			"Comment": "travisish-44-ge882a96",
+			"Rev": "e882a96ec18dd43fa283187b66af74497c9101c0"
+		},
+		{
+			"ImportPath": "github.com/olekukonko/tablewriter",
+			"Rev": "cca8bbc0798408af109aaaa239cbd2634846b340"
+		},
+		{
 			"ImportPath": "golang.org/x/crypto/pkcs12",
 			"Rev": "1f22c0103821b9390939b6776727195525381532"
 		},
