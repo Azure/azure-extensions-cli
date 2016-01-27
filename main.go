@@ -89,6 +89,11 @@ func main() {
 			Flags:  []cli.Flag{flSubsID, flSubsCert, flNamespace, flName, flVersion},
 			Action: unpublishVersion,
 		},
+		{Name: "delete-version",
+			Usage:  "Deletes the extension version. It should be unpublished first.",
+			Flags:  []cli.Flag{flSubsID, flSubsCert, flNamespace, flName, flVersion},
+			Action: deleteVersion,
+		},
 	}
 	app.RunAndExitOnError()
 }
@@ -218,6 +223,22 @@ func unpublishVersion(c *cli.Context) {
 		lg.Fatalf("UpdateExtension failed: %v", err)
 	}
 	lg.Info("UpdateExtension operation finished.")
+}
+
+func deleteVersion(c *cli.Context) {
+	cl := mkClient(checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
+	ns, name, version := checkFlag(c, flNamespace.Name), checkFlag(c, flName.Name), checkFlag(c, flVersion.Name)
+	log.Info("Deleting extension version. Make sure you unpublished before deleting.")
+
+	op, err := cl.DeleteExtension(ns, name, version)
+	if err != nil {
+		log.Fatalf("Error deleting version: %v", err)
+	}
+	log.Debug("DeleteExtension operation started.")
+	if err := cl.WaitForOperation(op); err != nil {
+		log.Fatalf("DeleteExtension failed: %v", err)
+	}
+	log.Info("DeleteExtension operation finished.")
 }
 
 func mkClient(subscriptionID, certFile string) ExtensionsClient {

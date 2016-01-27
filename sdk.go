@@ -67,9 +67,15 @@ func (c ExtensionsClient) GetReplicationStatus(publisherNamespace, extension, ve
 }
 
 // UpdateExtension sends the given extension handler definition XML to issue and update
-// request. Returned operation ID should be polled.
+// request. Returned operation ID should be polled for result.
 func (c ExtensionsClient) UpdateExtension(data []byte) (management.OperationID, error) {
 	return c.client.SendAzurePutRequest("services/extensions?action=update", "text/xml", data)
+}
+
+// DeleteExtension deletes the extension version. It should be marked as internal first.
+// Returned operation ID should be polled for result.
+func (c ExtensionsClient) DeleteExtension(namespace, name, version string) (management.OperationID, error) {
+	return c.client.SendAzureDeleteRequest(fmt.Sprintf("services/extensions/%s/%s/%s", namespace, name, version))
 }
 
 func (c ExtensionsClient) WaitForOperation(opID management.OperationID) error {
