@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io/ioutil"
 	"os"
 	"text/template"
 
@@ -12,6 +13,18 @@ func init() {
 	log.SetLevel(log.DebugLevel)
 	log.SetOutput(os.Stderr)
 }
+
+var (
+	flManifest = cli.StringFlag{
+		Name:  "manifest",
+		Usage: "Path of XML manifest for extension package (output of new-extension-manifest)"}
+	flSubsID = cli.StringFlag{
+		Name:  "subscription-id",
+		Usage: "Subscription ID for the publisher subscription"}
+	flSubsCert = cli.StringFlag{
+		Name:  "subscription-cert",
+		Usage: "Path of subscription management certificate (.pem) file"}
+)
 
 func main() {
 	app := cli.NewApp()
@@ -55,6 +68,11 @@ func main() {
 					Usage: "Extension platform e.g. 'Linux'"},
 			},
 		},
+		{Name: "list-versions",
+			Usage:  "Lists all published extension versions for subscription",
+			Flags:  []cli.Flag{flSubsID, flSubsCert},
+			Action: listVersions,
+		},
 	}
 	app.RunAndExitOnError()
 }
@@ -79,11 +97,7 @@ func newExtensionManifest(c *cli.Context) {
 		{&p.OS, "supported-os"},
 	}
 	for _, f := range flags {
-		if val := c.String(f.fl); val == "" {
-			log.Fatalf("argument %s must be provided", f.fl)
-		} else {
-			*f.ref = val
-		}
+		*f.ref = checkFlag(c, f.fl)
 	}
 	// doing a text template is easier and let us create comments (xml encoder can't)
 	// that are used as placeholders later on.
@@ -114,4 +128,33 @@ func newExtensionManifest(c *cli.Context) {
 	if err = tpl.Execute(os.Stdout, p); err != nil {
 		log.Fatalf("template execute error: %v", err)
 	}
+}
+
+func listVersions(c *cli.Context) {
+	cl := mkClient(checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
+	v, err := cl.ListVersions()
+	if err != nil {
+		log.Fatal("Request failed: %v", err)
+	}
+	log.Debugf("Found %d extensions", len(v.Extensions))
+}
+
+func mkClient(subscriptionID, certFile string) ExtensionsClient {
+	b, err := ioutil.ReadFile(certFile)
+	if err != nil {
+		log.Fatal("Cannot read certificate %s: %v", certFile, err)
+	}
+	cl, err := NewClient(subscriptionID, b)
+	if err != nil {
+		log.Fatal("Cannot create client: %v", err)
+	}
+	return cl
+}
+
+func checkFlag(c *cli.Context, fl string) string {
+	v := c.String(fl)
+	if v == "" {
+		log.Fatalf("argument %s must be provided", fl)
+	}
+	return v
 }
