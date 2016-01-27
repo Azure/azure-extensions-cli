@@ -1,0 +1,26 @@
+package main
+
+import (
+	"fmt"
+	"os"
+
+	log "github.com/Sirupsen/logrus"
+	"github.com/codegangsta/cli"
+	"github.com/olekukonko/tablewriter"
+)
+
+func listVersions(c *cli.Context) {
+	cl := mkClient(checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
+	v, err := cl.ListVersions()
+	if err != nil {
+		log.Fatal("Request failed: %v", err)
+	}
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Namespace", "Type", "Version", "Replication Completed", "Regions"})
+	data := [][]string{}
+	for _, e := range v.Extensions {
+		data = append(data, []string{e.Ns, e.Name, e.Version, fmt.Sprintf("%v", e.ReplicationCompleted), e.Regions})
+	}
+	table.AppendBulk(data)
+	table.Render()
+}
