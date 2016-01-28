@@ -91,8 +91,8 @@ Ahmet Alp Balkan
 
 ## TODO 
 
--[ ] make `replication-status` exit if replication not completed.
--[ ] make `replication-status` `--wait` arg to poll until replication completes.
+- [ ] make `replication-status` exit if replication not completed.
+- [ ] make `replication-status` `--wait` arg to poll until replication completes.
 
 ## License
 
