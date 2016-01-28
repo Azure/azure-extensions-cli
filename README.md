@@ -1,4 +1,4 @@
-# azure-extensions-cli ("Project Shanghai")
+# azure-extensions-cli
 This tool is intended only for publishers of Azure VM extensions.
 If you are not an Azure employee, there is nothing here for you.
 
@@ -88,6 +88,11 @@ To cross compile:
 ## Author
 
 Ahmet Alp Balkan
+
+## TODO 
+
+-[ ] make `replication-status` exit if replication not completed.
+-[ ] make `replication-status` `--wait` arg to poll until replication completes.
 
 ## License
 
