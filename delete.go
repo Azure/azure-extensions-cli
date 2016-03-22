@@ -6,7 +6,7 @@ import (
 )
 
 func deleteVersion(c *cli.Context) {
-	cl := mkClient(checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
+	cl := mkClient(getFlag(c, flMgtURL.Name), checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
 	ns, name, version := checkFlag(c, flNamespace.Name), checkFlag(c, flName.Name), checkFlag(c, flVersion.Name)
 	log.Info("Deleting extension version. Make sure you unpublished before deleting.")
 
