@@ -28,8 +28,8 @@ var (
 		Usage: "Path of extension manifest file (XML output of 'new-extension-manifest')"}
 	flMgtURL = cli.StringFlag{
 		Name:   "management-url",
-		Usage:  "Azure Management URL for different clouds. Default to https://management.core.windows.net (Azure public cloud)",
-		Value:  management.DefaultConfig().ManagementURL,
+		Usage:  "Azure Management URL for a non-public Azure cloud",
+		Value:  management.DefaultAzureManagementURL,
 		EnvVar: "MANAGEMENT_URL"}
 	flSubsID = cli.StringFlag{
 		Name:   "subscription-id",
