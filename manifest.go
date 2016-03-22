@@ -9,7 +9,7 @@ import (
 )
 
 func newExtensionManifest(c *cli.Context) {
-	cl := mkClient(getFlag(c, flMgtURL.Name), checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
+	cl := mkClient(checkFlag(c, flMgtURL.Name), checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
 	storageAccount := checkFlag(c, flStorageAccount.Name)
 	extensionPkg := checkFlag(c, flPackage.Name)
 

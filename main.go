@@ -6,6 +6,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
+	"github.com/Azure/azure-sdk-for-go/management"
 )
 
 const (
@@ -28,6 +29,7 @@ var (
 	flMgtURL = cli.StringFlag{
 		Name:   "management-url",
 		Usage:  "Azure Management URL for different clouds. Default to https://management.core.windows.net (Azure public cloud)",
+		Value:  management.DefaultConfig().ManagementURL,
 		EnvVar: "MANAGEMENT_URL"}
 	flSubsID = cli.StringFlag{
 		Name:   "subscription-id",
@@ -155,8 +157,4 @@ func checkFlag(c *cli.Context, fl string) string {
 		log.Fatalf("argument %q must be provided", fl)
 	}
 	return v
-}
-
-func getFlag(c *cli.Context, fl string) string {
-	return c.String(fl)
 }

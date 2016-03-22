@@ -21,9 +21,7 @@ type ExtensionsClient struct {
 func NewClient(mgtURL string, subscriptionID string, cert []byte) (ExtensionsClient, error) {
 	cfg := management.DefaultConfig()
 	cfg.APIVersion = apiVersion
-	if mgtURL != "" {
-		cfg.ManagementURL = mgtURL
-	}
+	cfg.ManagementURL = mgtURL
 	cl, err := management.NewClientFromConfig(subscriptionID, cert, cfg)
 	return ExtensionsClient{cl}, err
 }

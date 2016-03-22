@@ -40,7 +40,7 @@ func promoteExtension(c *cli.Context, regionsXML string) error {
 		return err
 	}
 	if err := publishExtension(c, "UpdateExtension", b,
-		mkClient(getFlag(c, flMgtURL.Name), checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name)).UpdateExtension); err != nil {
+		mkClient(checkFlag(c, flMgtURL.Name), checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name)).UpdateExtension); err != nil {
 		return err
 	}
 	return nil
