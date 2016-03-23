@@ -27,7 +27,7 @@ func publishExtension(c *cli.Context, operationName string, manifest []byte, op 
 	}
 	log.Debugf("Saving used manifest for debugging: %s", mPath)
 
-	cl := mkClient(checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
+	cl := mkClient(checkFlag(c, flMgtURL.Name), checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
 	opID, err := op(manifest)
 	if err != nil {
 		return fmt.Errorf("Error: %v", err)
@@ -68,7 +68,7 @@ func publishExtensionFromManifestFile(c *cli.Context, operationName, manifestPat
 }
 
 func createExtension(c *cli.Context) {
-	cl := mkClient(checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
+	cl := mkClient(checkFlag(c, flMgtURL.Name), checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
 	if err := publishExtensionFromManifestFile(c, "CreateExtension",
 		checkFlag(c, flManifest.Name), cl.CreateExtension); err != nil {
 		log.Fatal(err)
@@ -76,7 +76,7 @@ func createExtension(c *cli.Context) {
 }
 
 func updateExtension(c *cli.Context) {
-	cl := mkClient(checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
+	cl := mkClient(checkFlag(c, flMgtURL.Name), checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
 	if err := publishExtensionFromManifestFile(c, "UpdateExtension", checkFlag(c, flManifest.Name),
 		cl.UpdateExtension); err != nil {
 		log.Fatal(err)

@@ -6,6 +6,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
+	"github.com/Azure/azure-sdk-for-go/management"
 )
 
 const (
@@ -25,6 +26,11 @@ var (
 	flManifest = cli.StringFlag{
 		Name:  "manifest",
 		Usage: "Path of extension manifest file (XML output of 'new-extension-manifest')"}
+	flMgtURL = cli.StringFlag{
+		Name:   "management-url",
+		Usage:  "Azure Management URL for a non-public Azure cloud",
+		Value:  management.DefaultAzureManagementURL,
+		EnvVar: "MANAGEMENT_URL"}
 	flSubsID = cli.StringFlag{
 		Name:   "subscription-id",
 		Usage:  "Subscription ID for the publisher subscription",
@@ -69,7 +75,7 @@ func main() {
 			Usage:  "Creates an XML file used to publish or update extension.",
 			Action: newExtensionManifest,
 			Flags: []cli.Flag{
-				flSubsID, flSubsCert, flPackage, flStorageAccount,
+				flMgtURL, flSubsID, flSubsCert, flPackage, flStorageAccount,
 				flNamespace, flName, flVersion,
 				cli.StringFlag{
 					Name:  "label",
@@ -95,19 +101,19 @@ func main() {
 			}},
 		{Name: "new-extension",
 			Usage:  "Creates a new type of extension, not for releasing new versions.",
-			Flags:  []cli.Flag{flSubsID, flSubsCert, flManifest},
+			Flags:  []cli.Flag{flMgtURL, flSubsID, flSubsCert, flManifest},
 			Action: createExtension},
 		{Name: "new-extension-version",
 			Usage:  "Publishes a new type of extension internally.",
-			Flags:  []cli.Flag{flSubsID, flSubsCert, flManifest},
+			Flags:  []cli.Flag{flMgtURL, flSubsID, flSubsCert, flManifest},
 			Action: updateExtension},
 		{Name: "promote-single-region",
 			Usage:  "Promote published internal extension to PROD in a Location.",
-			Flags:  []cli.Flag{flSubsID, flSubsCert, flManifest, flRegion1},
+			Flags:  []cli.Flag{flMgtURL, flSubsID, flSubsCert, flManifest, flRegion1},
 			Action: promoteToFirstSlice},
 		{Name: "promote-two-regions",
 			Usage:  "Promote published extension to PROD in two Locations.",
-			Flags:  []cli.Flag{flSubsID, flSubsCert, flManifest, flRegion1, flRegion2},
+			Flags:  []cli.Flag{flMgtURL, flSubsID, flSubsCert, flManifest, flRegion1, flRegion2},
 			Action: promoteToSecondSlice},
 		{Name: "promote-all-regions",
 			Usage:  "Promote published extension to all Locations.",
@@ -115,30 +121,30 @@ func main() {
 			Action: promoteToAllRegions},
 		{Name: "list-versions",
 			Usage:  "Lists all published extension versions for subscription",
-			Flags:  []cli.Flag{flSubsID, flSubsCert},
+			Flags:  []cli.Flag{flMgtURL, flSubsID, flSubsCert},
 			Action: listVersions},
 		{Name: "replication-status",
 			Usage:  "Retrieves replication status for an uploaded extension package",
-			Flags:  []cli.Flag{flSubsID, flSubsCert, flNamespace, flName, flVersion},
+			Flags:  []cli.Flag{flMgtURL, flSubsID, flSubsCert, flNamespace, flName, flVersion},
 			Action: replicationStatus},
 		{Name: "unpublish-version",
 			Usage:  "Marks the specified version of the extension internal. Does not delete.",
-			Flags:  []cli.Flag{flSubsID, flSubsCert, flNamespace, flName, flVersion},
+			Flags:  []cli.Flag{flMgtURL, flSubsID, flSubsCert, flNamespace, flName, flVersion},
 			Action: unpublishVersion},
 		{Name: "delete-version",
 			Usage:  "Deletes the extension version. It should be unpublished first.",
-			Flags:  []cli.Flag{flSubsID, flSubsCert, flNamespace, flName, flVersion},
+			Flags:  []cli.Flag{flMgtURL, flSubsID, flSubsCert, flNamespace, flName, flVersion},
 			Action: deleteVersion},
 	}
 	app.RunAndExitOnError()
 }
 
-func mkClient(subscriptionID, certFile string) ExtensionsClient {
+func mkClient(mgtURL, subscriptionID, certFile string) ExtensionsClient {
 	b, err := ioutil.ReadFile(certFile)
 	if err != nil {
 		log.Fatalf("Cannot read certificate %s: %v", certFile, err)
 	}
-	cl, err := NewClient(subscriptionID, b)
+	cl, err := NewClient(mgtURL, subscriptionID, b)
 	if err != nil {
 		log.Fatal("Cannot create client: %v", err)
 	}

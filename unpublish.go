@@ -35,7 +35,7 @@ func unpublishVersion(c *cli.Context) {
 		log.Fatalf("template execute error: %v", err)
 	}
 
-	cl := mkClient(checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
+	cl := mkClient(checkFlag(c, flMgtURL.Name), checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
 	op, err := cl.UpdateExtension(b.Bytes())
 	if err != nil {
 		log.Fatalf("UpdateExtension failed: %v", err)

@@ -9,7 +9,7 @@ import (
 )
 
 func replicationStatus(c *cli.Context) {
-	cl := mkClient(checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
+	cl := mkClient(checkFlag(c, flMgtURL.Name), checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
 	ns, name, version := checkFlag(c, flNamespace.Name), checkFlag(c, flName.Name), checkFlag(c, flVersion.Name)
 	log.Debug("Requesting replication status.")
 	rs, err := cl.GetReplicationStatus(ns, name, version)

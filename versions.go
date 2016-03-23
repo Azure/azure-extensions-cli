@@ -10,7 +10,7 @@ import (
 )
 
 func listVersions(c *cli.Context) {
-	cl := mkClient(checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
+	cl := mkClient(checkFlag(c, flMgtURL.Name), checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
 	v, err := cl.ListVersions()
 	if err != nil {
 		log.Fatalf("Request failed: %v", err)
