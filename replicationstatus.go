@@ -14,7 +14,7 @@ func replicationStatus(c *cli.Context) {
 	log.Debug("Requesting replication status.")
 	rs, err := cl.GetReplicationStatus(ns, name, version)
 	if err != nil {
-		log.Fatal("Cannot fetch replication status: %v", err)
+		log.Fatalf("Cannot fetch replication status: %v", err)
 	}
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Location", "Status"})
