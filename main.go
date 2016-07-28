@@ -117,7 +117,7 @@ func main() {
 			Action: promoteToSecondSlice},
 		{Name: "promote-all-regions",
 			Usage:  "Promote published extension to all Locations.",
-			Flags:  []cli.Flag{flSubsID, flSubsCert, flManifest},
+			Flags:  []cli.Flag{flMgtURL, flSubsID, flSubsCert, flManifest},
 			Action: promoteToAllRegions},
 		{Name: "list-versions",
 			Usage:  "Lists all published extension versions for subscription",
