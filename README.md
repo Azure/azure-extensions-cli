@@ -1,6 +1,8 @@
 # azure-extensions-cli
-This tool is intended only for publishers of Azure VM extensions.
-If you are not an Azure employee, there is nothing here for you.
+
+:warning::warning:  This tool is intended only for publishers of Azure VM 
+extensions. If you are not an Azure employee or a whitelisted extension
+publisher, there is nothing here for you.
 
 This command line interface is a simple wrapper on top of RDFE Extension
 Publishing APIs.
@@ -91,8 +93,9 @@ Ahmet Alp Balkan
 
 ## TODO 
 
-- [ ] make `replication-status` exit if replication not completed.
+- [ ] make `replication-status` exit with appropriate code if replication is not completed.
 - [ ] make `replication-status` `--wait` arg to poll until replication completes.
+- [ ] add `replication-status --json` flag to output for a programmable output.
 
 ## License
 
