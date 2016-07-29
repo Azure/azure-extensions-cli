@@ -1,0 +1,12 @@
+sudo: false
+language: go
+go: go1.6
+install:
+  - go get -u github.com/golang/lint/golint
+  - go get -u github.com/mitchellh/gox
+script:
+  - test -z "$(gofmt -s -l -w $(find . -type f -name '*.go' -not -path './vendor/*') | tee /dev/stderr)"
+  - test -z "$(golint . | tee /dev/stderr)"
+  - test -z "$(go vet -v $(go list ./... | grep -v '/vendor/') | tee /dev/stderr)"
+  - go list ./... | grep -v '/vendor/' | xargs go test -v -cover
+  - gox -os="linux darwin windows" -arch="amd64"
