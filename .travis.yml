@@ -2,11 +2,23 @@ sudo: false
 language: go
 go: go1.6
 install:
-  - go get -u github.com/golang/lint/golint
-  - go get -u github.com/mitchellh/gox
+- go get -u github.com/golang/lint/golint
+- go get -u github.com/mitchellh/gox
 script:
-  - test -z "$(gofmt -s -l -w $(find . -type f -name '*.go' -not -path './vendor/*') | tee /dev/stderr)"
-  - test -z "$(golint . | tee /dev/stderr)"
-  - test -z "$(go vet -v $(go list ./... | grep -v '/vendor/') | tee /dev/stderr)"
-  - go list ./... | grep -v '/vendor/' | xargs go test -v -cover
-  - gox -os="linux darwin windows" -arch="amd64"
+- test -z "$(gofmt -s -l -w $(find . -type f -name '*.go' -not -path './vendor/*')
+  | tee /dev/stderr)"
+- test -z "$(golint . | tee /dev/stderr)"
+- test -z "$(go vet -v $(go list ./... | grep -v '/vendor/') | tee /dev/stderr)"
+- go list ./... | grep -v '/vendor/' | xargs go test -v -cover
+- gox -os="linux darwin windows" -arch="amd64"
+deploy:
+  provider: releases
+  api_key:
+    secure: EXl0wkhJxLAt+g+zJEp5qkT4aOVKyr/3KXb9DuvUcDkc7ojpjad7z5XIrM3b88hxN/RgUQJVc2WeFfvvs0bhY5tfuEZz8OkZoLC9cLcuqPfNa0FY6WWctOzRyK+Awxni7whCGFKHqQFLtx+ikd1Y8RZun7+zs4fhGhQxzaBxGqPhBelLPscoMAxsZEju/PQ2+FLEb+vjvKWRMFfpZnL0C4Ei29Z7JB3SySPrmH1kJh4/HM5gYLeOieVe2EyI6fmU+5I1Kki+Y89vGaxJLMUJVs9drk0sQ2S+AJJkfaAzkBVJmx6k4iXsusfIWM+aMWf9a9PFJjgnf5kETCUr/dEul2RMsCJOC0uB6VRBjG30P6iHITGTU++O8C3wbbekD7Ao7rqb4LzS1Ybyr2bhlk3SBpfoSbCNlFM1qaL7xUxpi65sGbJnY3TRSO/Ykq+UWuR6YFo+E4OZAzlw1hZeanNDcTYgBP4xXma5iENqcI19tQbwaDgZQymUX64aFxamvvf22JtXZCH05EkUAw2BUbp82V6KyMfSl5KC2X58Nt/eFhonwfK60iFVVasw/Hi7rFs0TZM38exY/A93pRhG+OQEPU4SSG7YuU6CZ2sEUCuHw7Zz4FwnoXSvAomey3wwIF4aajYTeE+nxDXWDRHqElKX6Q66Mc7ahsBul8IDHNS4Sfs=
+  file:
+    - "azure-extensions-cli_windows_amd64.exe"
+    - "azure-extensions-cli_linux_amd64"
+    - "azure-extensions-cli_darwin_amd64"
+  on:
+    tags: true
+    repo: Azure/azure-extensions-cli

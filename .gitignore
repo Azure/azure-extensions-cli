@@ -3,6 +3,7 @@
 *.swp
 docker-ext-commands.txt
 bin/
+azure-extensions-cli_*_amd64*
 
 # Compiled binary
 azure-extensions-cli
