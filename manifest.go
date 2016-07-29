@@ -45,7 +45,7 @@ func newExtensionManifest(c *cli.Context) {
 
 	// doing a text template is easier and let us create comments (xml encoder can't)
 	// that are used as placeholders later on.
-	manifestXml := `<?xml version="1.0" encoding="utf-8" ?>
+	manifestXML := `<?xml version="1.0" encoding="utf-8" ?>
 <ExtensionImage xmlns="http://schemas.microsoft.com/windowsazure"  xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
   <!-- WARNING: Ordering of fields matter in this file. -->
   <ProviderNameSpace>{{.Namespace}}</ProviderNameSpace>
@@ -65,7 +65,7 @@ func newExtensionManifest(c *cli.Context) {
   <!--%REGIONS%-->
 </ExtensionImage>
 `
-	tpl, err := template.New("manifest").Parse(manifestXml)
+	tpl, err := template.New("manifest").Parse(manifestXML)
 	if err != nil {
 		log.Fatalf("template parse error: %v", err)
 	}

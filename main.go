@@ -4,9 +4,9 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/Azure/azure-sdk-for-go/management"
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
-	"github.com/Azure/azure-sdk-for-go/management"
 )
 
 const (
@@ -146,7 +146,7 @@ func mkClient(mgtURL, subscriptionID, certFile string) ExtensionsClient {
 	}
 	cl, err := NewClient(mgtURL, subscriptionID, b)
 	if err != nil {
-		log.Fatal("Cannot create client: %v", err)
+		log.Fatalf("Cannot create client: %v", err)
 	}
 	return cl
 }

@@ -16,7 +16,7 @@ func unpublishVersion(c *cli.Context) {
 		Name:      checkFlag(c, flName.Name),
 		Version:   checkFlag(c, flVersion.Name)}
 
-	manifestXml := `<?xml version="1.0" encoding="utf-8" ?>
+	unpublishManifestXML := `<?xml version="1.0" encoding="utf-8" ?>
 <ExtensionImage xmlns="http://schemas.microsoft.com/windowsazure"  xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
   <!-- WARNING: Ordering of fields matter in this file. -->
   <ProviderNameSpace>{{.Namespace}}</ProviderNameSpace>
@@ -25,7 +25,7 @@ func unpublishVersion(c *cli.Context) {
   <IsInternalExtension>true</IsInternalExtension>
   <IsJsonExtension>true</IsJsonExtension>
 </ExtensionImage>`
-	tpl, err := template.New("unregisterManifest").Parse(manifestXml)
+	tpl, err := template.New("unregisterManifest").Parse(unpublishManifestXML)
 	if err != nil {
 		log.Fatalf("template parse error: %v", err)
 	}

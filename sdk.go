@@ -14,10 +14,13 @@ const (
 	apiVersion                     = "2015-04-01"
 )
 
+// ExtensionsClient builds a new Azure Service Management Client with Extension
+// Publishing operations.
 type ExtensionsClient struct {
 	client management.Client
 }
 
+// NewClient constructs an ExtensionsClient.
 func NewClient(mgtURL string, subscriptionID string, cert []byte) (ExtensionsClient, error) {
 	cfg := management.DefaultConfig()
 	cfg.APIVersion = apiVersion
@@ -26,18 +29,21 @@ func NewClient(mgtURL string, subscriptionID string, cert []byte) (ExtensionsCli
 	return ExtensionsClient{cl}, err
 }
 
+// ListVersionsResponse is response returned from Publisher Extensions endpoint.
 type ListVersionsResponse struct {
 	XMLName    xml.Name `xml:"ExtensionImages"`
 	Extensions []struct {
 		Ns                   string `xml:"ProviderNameSpace"`
 		Name                 string `xml:"Type"`
-		Version              string `xml:Version"`
+		Version              string `xml:"Version"`
 		ReplicationCompleted bool   `xml:"ReplicationCompleted"`
 		Regions              string `xml:"Regions"`
 		IsInternal           bool   `xml:"IsInternalExtension"`
 	} `xml:"ExtensionImage"`
 }
 
+// ListVersions returns all the published extensions and their versions from the
+// publisher subscription.
 func (c ExtensionsClient) ListVersions() (ListVersionsResponse, error) {
 	var l ListVersionsResponse
 
@@ -50,6 +56,8 @@ func (c ExtensionsClient) ListVersions() (ListVersionsResponse, error) {
 	return l, err
 }
 
+// ReplicationStatusResponse is the response contents of the Get Replication
+// Status endpoint.
 type ReplicationStatusResponse struct {
 	XMLName  xml.Name `xml:"ReplicationStatusList"`
 	Statuses []struct {
@@ -58,7 +66,10 @@ type ReplicationStatusResponse struct {
 	} `xml:"ReplicationStatus"`
 }
 
-func (c ExtensionsClient) GetReplicationStatus(publisherNamespace, extension, version string) (ReplicationStatusResponse, error) {
+// GetReplicationStatus retrieves the replication status of the specified
+// extension handler.
+func (c ExtensionsClient) GetReplicationStatus(publisherNamespace, extension,
+	version string) (ReplicationStatusResponse, error) {
 	var l ReplicationStatusResponse
 
 	response, err := c.client.SendAzureGetRequest(fmt.Sprintf("services/extensions/%s/%s/%s/replicationstatus",
@@ -89,6 +100,9 @@ func (c ExtensionsClient) DeleteExtension(namespace, name, version string) (mana
 	return c.client.SendAzureDeleteRequest(fmt.Sprintf("services/extensions/%s/%s/%s", namespace, name, version))
 }
 
+// WaitForOperation polls indefinitely until the specified Azure Service
+// Management REST API operation ID reaches a terminal state. If operation
+// fails, it wraps the error and returns it.
 func (c ExtensionsClient) WaitForOperation(opID management.OperationID) error {
 	lg := log.WithField("x-ms-operation-id", opID)
 	lg.Debug("Waiting for operation to complete.")
