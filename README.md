@@ -43,13 +43,13 @@ the relevant documentation first.
 
 ## CLI
 
-May be up-to-date, but to give an idea:
+This might not be up-to-date, but to give an idea, here are the subcommands
 
 ```
 $./azure-extensions-cli
 NAME:
-   azure-extensions-cli - This tool is designed for Microsoft internal extension publishers to release,
-   update and manage Virtual Machine extensions.
+   azure-extensions-cli - This tool is designed for Microsoft internal extension publishers
+    to release, update and manage Virtual Machine extensions.
 
 USAGE:
    azure-extensions-cli [global options] command [command options] [arguments...]
