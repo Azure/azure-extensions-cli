@@ -73,19 +73,13 @@ GLOBAL OPTIONS:
 ```
 
 
-## Building
+## Installing (or building from source)
 
-This project is written in Go, make sure you have Go **1.5+** installed
-and run:
+You can head over to the **Releases** section to download a binary built for various platforms.
 
-     export GO15VENDOREXPERIMENT=1
-     go build
-
-To cross compile:
-    
-     go get github.com/mitchellh/gox
-     export PATH=$PATH:$GOPATH/bin
-     gox -arch="amd64" -os="windows linux darwin" -output "bin/{{.OS}}-{{.Arch}}_{{.Dir}}"
+If you need to compile from the source code, make sure you have Go compiler 1.6+ installed.
+Check out the project, set the GOPATH environment variable correctly (if necessary) and
+run `go build`. This should compile a binary.
 
 ## Author
 
