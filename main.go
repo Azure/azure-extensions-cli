@@ -63,6 +63,9 @@ var (
 		Name:   "region-2",
 		Usage:  "Primary pilot location to roll out the extension (e.g. 'Brazil South')",
 		EnvVar: "REGION2"}
+	flJSON = cli.BoolFlag{
+		Name:  "json",
+		Usage: "Print output as JSON"}
 )
 
 func main() {
@@ -126,7 +129,7 @@ func main() {
 			Action: listVersions},
 		{Name: "replication-status",
 			Usage:  "Retrieves replication status for an uploaded extension package",
-			Flags:  []cli.Flag{flMgtURL, flSubsID, flSubsCert, flNamespace, flName, flVersion},
+			Flags:  []cli.Flag{flMgtURL, flSubsID, flSubsCert, flNamespace, flName, flVersion, flJSON},
 			Action: replicationStatus},
 		{Name: "unpublish-version",
 			Usage:  "Marks the specified version of the extension internal. Does not delete.",
