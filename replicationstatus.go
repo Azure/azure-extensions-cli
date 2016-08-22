@@ -22,7 +22,7 @@ func replicationStatus(c *cli.Context) {
 
 	var f func(_ ReplicationStatusResponse) error
 	if json {
-		f = printAsJson
+		f = printAsJSON
 	} else {
 		f = printAsTable
 	}
@@ -31,7 +31,7 @@ func replicationStatus(c *cli.Context) {
 	}
 }
 
-func printAsJson(r ReplicationStatusResponse) error {
+func printAsJSON(r ReplicationStatusResponse) error {
 	b, err := json.MarshalIndent(r.Statuses, "", "  ")
 	if err != nil {
 		return fmt.Errorf("failed to format as json: %+v", err)
