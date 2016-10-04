@@ -89,7 +89,7 @@ Ahmet Alp Balkan
 
 - [ ] make `replication-status` exit with appropriate code if replication is not completed.
 - [ ] make `replication-status` `--wait` arg to poll until replication completes.
-- [ ] add `replication-status --json` flag to output for a programmable output.
+- [x] add `replication-status --json` flag to output for a programmable output.
 
 ## License
 
