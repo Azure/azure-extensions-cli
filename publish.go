@@ -83,7 +83,7 @@ func updateExtension(c *cli.Context) {
 	}
 }
 
-func uploadBlob(cl ExtensionsClient, storageAccount, packagePath string) (string, error) {
+func uploadBlob(cl ExtensionsClient, storageRealm, storageAccount, packagePath string) (string, error) {
 	// Fetch keys for storage account
 	svc := storageservice.NewClient(cl.client)
 	keys, err := svc.GetStorageServiceKeys(storageAccount)
@@ -104,7 +104,7 @@ func uploadBlob(cl ExtensionsClient, storageAccount, packagePath string) (string
 	defer pkg.Close()
 
 	// Upload blob
-	sc, err := storage.NewBasicClient(storageAccount, keys.PrimaryKey)
+	sc, err := storage.NewClient(storageAccount, keys.PrimaryKey, storageRealm, storage.DefaultAPIVersion, true)
 	if err != nil {
 		return "", fmt.Errorf("Could not create storage client: %v", err)
 	}

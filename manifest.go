@@ -10,6 +10,7 @@ import (
 
 func newExtensionManifest(c *cli.Context) {
 	cl := mkClient(checkFlag(c, flMgtURL.Name), checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
+	storageRealm := checkFlag(c, flStorageRealm.Name)
 	storageAccount := checkFlag(c, flStorageAccount.Name)
 	extensionPkg := checkFlag(c, flPackage.Name)
 
@@ -36,7 +37,7 @@ func newExtensionManifest(c *cli.Context) {
 	}
 
 	// Upload extension blob
-	blobURL, err := uploadBlob(cl, storageAccount, extensionPkg)
+	blobURL, err := uploadBlob(cl, storageRealm, storageAccount, extensionPkg)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/Azure/azure-sdk-for-go/management"
+	"github.com/Azure/azure-sdk-for-go/storage"
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 )
@@ -32,6 +33,11 @@ var (
 		Usage:  "Azure Management URL for a non-public Azure cloud",
 		Value:  management.DefaultAzureManagementURL,
 		EnvVar: "MANAGEMENT_URL"}
+	flStorageRealm = cli.StringFlag{
+		Name:   "storage-base-url",
+		Usage:  "Azure Storage base URL",
+		Value:  storage.DefaultBaseURL,
+		EnvVar: "STORAGE_BASE_URL"}
 	flSubsID = cli.StringFlag{
 		Name:   "subscription-id",
 		Usage:  "Subscription ID for the publisher subscription",
@@ -79,8 +85,8 @@ func main() {
 			Usage:  "Creates an XML file used to publish or update extension.",
 			Action: newExtensionManifest,
 			Flags: []cli.Flag{
-				flMgtURL, flSubsID, flSubsCert, flPackage, flStorageAccount,
-				flNamespace, flName, flVersion,
+				flMgtURL, flSubsID, flSubsCert, flPackage, flStorageRealm,
+				flStorageAccount, flNamespace, flName, flVersion,
 				cli.StringFlag{
 					Name:  "label",
 					Usage: "Human readable name of the extension"},
