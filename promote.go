@@ -51,15 +51,24 @@ func mkRegionElement(regions ...string) string {
 }
 
 // updateManifestRegions makes an in-memory update to the <!--%REGIONS%-->
-// placeholder string in the manifest XML for further usage and replaces
-// <IsInternalExtension>true... with ...false.
+// placeholder string in the manifest XML for further usage, and
+// sets <IsInternalExtension> according to whether the package
+// should remain internal (vm agent) or not (extensions)
 func updateManifestRegions(manifestPath string, regionsXMLElement string) ([]byte, error) {
 	b, err := ioutil.ReadFile(manifestPath)
 	if err != nil {
 		return nil, fmt.Errorf("Error reading manifest: %v", err)
 	}
 
-	// I know I can do better than this, but will I?
+	// todo: improve this
 	b = bytes.Replace(b, []byte(`<!--%REGIONS%-->`), []byte(regionsXMLElement), 1)
-	return bytes.Replace(b, []byte(`<IsInternalExtension>true`), []byte(`<IsInternalExtension>false`), 1), nil
+
+	updateInternal := !bytes.Contains(b, []byte(`<ProviderNameSpace>Microsoft.OSTCLinuxAgent</ProviderNameSpace>`))
+	if updateInternal {
+		b = bytes.Replace(b, []byte(`<IsInternalExtension>true`), []byte(`<IsInternalExtension>false`), 1)
+	} else {
+		log.Debug("VM agent namespace detected, IsInternalExtension ignored")
+	}
+
+	return b, err
 }
