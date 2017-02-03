@@ -8,6 +8,46 @@ import (
 	"github.com/codegangsta/cli"
 )
 
+type ExtensionImage struct {
+	XMLName             string `xml:"ExtensionImage"`
+	NS                  string `xml:"xmlns,attr"`
+	ProviderNameSpace   string `xml:"ProviderNameSpace"`
+	Type                string `xml:"Type"`
+	Version             string `xml:"Version"`
+	Label               string `xml:"Label"`
+	HostingResources    string `xml:"HostingResources"`
+	MediaLink           string `xml:"MediaLink"`
+	Description         string `xml:"Description"`
+	IsInternalExtension bool   `xml:"IsInternalExtension"`
+	Eula                string `xml:"Eula"`
+	PrivacyUri          string `xml:"PrivacyUri"`
+	HomepageUri         string `xml:"HomepageUri"`
+	IsJsonExtension     bool   `xml:"IsJsonExtension"`
+	CompanyName         string `xml:"CompanyName"`
+	SupportedOS         string `xml:"SupportedOS"`
+	Regions             string `xml:"Regions,omitempty"`
+}
+
+type ExtensionImageGlobal struct {
+	XMLName             string `xml:"ExtensionImage"`
+	NS                  string `xml:"xmlns,attr"`
+	ProviderNameSpace   string `xml:"ProviderNameSpace"`
+	Type                string `xml:"Type"`
+	Version             string `xml:"Version"`
+	Label               string `xml:"Label"`
+	HostingResources    string `xml:"HostingResources"`
+	MediaLink           string `xml:"MediaLink"`
+	Description         string `xml:"Description"`
+	IsInternalExtension bool   `xml:"IsInternalExtension"`
+	Eula                string `xml:"Eula"`
+	PrivacyUri          string `xml:"PrivacyUri"`
+	HomepageUri         string `xml:"HomepageUri"`
+	IsJsonExtension     bool   `xml:"IsJsonExtension"`
+	CompanyName         string `xml:"CompanyName"`
+	SupportedOS         string `xml:"SupportedOS"`
+	Regions             string `xml:"Regions"`
+}
+
 func newExtensionManifest(c *cli.Context) {
 	cl := mkClient(checkFlag(c, flMgtURL.Name), checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
 	storageRealm := checkFlag(c, flStorageRealm.Name)
