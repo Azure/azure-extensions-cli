@@ -1,13 +1,30 @@
 package main
 
 import (
-	"os"
-	"text/template"
+	"encoding/xml"
+	"fmt"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 )
 
+// NOTE(@boumenot): there is probably a better way to express this.  If
+// you know please share...
+//
+// The only difference between ExtensionImage and ExtensionImageGlobal is the
+// Regions element.  This element can be in three different states to my
+// knowledge.
+//
+//   1. not defined
+//   2. <Regions>Region1;Region2</Regions>
+//   3. <Regions></Regions>
+//
+// Case (1) occurs when an extension is first published.  Case(2) occurs when
+// an extension is promoted to one or two regions.  Case (3) occurs when an
+// extension is published to all regions.
+//
+// I do not know how to express all three cases using Go's XML serializer.
+//
 type ExtensionImage struct {
 	XMLName             string `xml:"ExtensionImage"`
 	NS                  string `xml:"xmlns,attr"`
@@ -54,63 +71,31 @@ func newExtensionManifest(c *cli.Context) {
 	storageAccount := checkFlag(c, flStorageAccount.Name)
 	extensionPkg := checkFlag(c, flPackage.Name)
 
-	var p struct {
-		Namespace, Name, Version, BlobURL, Label, Description, Eula, Privacy, Homepage, Company, OS string
-	}
-	flags := []struct {
-		ref *string
-		fl  string
-	}{
-		{&p.Namespace, flNamespace.Name},
-		{&p.Name, flName.Name},
-		{&p.Version, flVersion.Name},
-		{&p.Label, "label"},
-		{&p.Description, "description"},
-		{&p.Eula, "eula-url"},
-		{&p.Privacy, "privacy-url"},
-		{&p.Homepage, "homepage-url"},
-		{&p.Company, "company"},
-		{&p.OS, "supported-os"},
-	}
-	for _, f := range flags {
-		*f.ref = checkFlag(c, f.fl)
-	}
-
 	// Upload extension blob
 	blobURL, err := uploadBlob(cl, storageRealm, storageAccount, extensionPkg)
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Debugf("Extension package uploaded to: %s", blobURL)
-	p.BlobURL = blobURL
 
-	// doing a text template is easier and let us create comments (xml encoder can't)
-	// that are used as placeholders later on.
-	manifestXML := `<?xml version="1.0" encoding="utf-8" ?>
-<ExtensionImage xmlns="http://schemas.microsoft.com/windowsazure"  xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
-  <!-- WARNING: Ordering of fields matter in this file. -->
-  <ProviderNameSpace>{{.Namespace}}</ProviderNameSpace>
-  <Type>{{.Name}}</Type>
-  <Version>{{.Version}}</Version>
-  <Label>{{.Label}}</Label>
-  <HostingResources>VmRole</HostingResources>
-  <MediaLink>{{.BlobURL}}</MediaLink>
-  <Description>{{.Description}}</Description>
-  <IsInternalExtension>true</IsInternalExtension>
-  <Eula>{{.Eula}}</Eula>
-  <PrivacyUri>{{.Privacy}}</PrivacyUri>
-  <HomepageUri>{{.Homepage}}</HomepageUri>
-  <IsJsonExtension>true</IsJsonExtension>
-  <CompanyName>{{.Company}}</CompanyName>
-  <SupportedOS>{{.OS}}</SupportedOS>
-  <!--%REGIONS%-->
-</ExtensionImage>
-`
-	tpl, err := template.New("manifest").Parse(manifestXML)
+	manifest := ExtensionImage{
+		ProviderNameSpace: checkFlag(c, flNamespace.Name),
+		Type: checkFlag(c, flName.Name),
+		Version: checkFlag(c, flVersion.Name),
+		Label: "label",
+		Description: "description",
+		MediaLink: blobURL,
+		Eula: "eula-url",
+		PrivacyUri: "privacy-url",
+		HomepageUri: "homepage-url",
+		CompanyName: "company",
+		SupportedOS: "supported-os",
+	}
+
+	bs, err := xml.MarshalIndent(manifest, "", "  ")
 	if err != nil {
-		log.Fatalf("template parse error: %v", err)
+		log.Fatalf("xml marshall error: %v", err)
 	}
-	if err = tpl.Execute(os.Stdout, p); err != nil {
-		log.Fatalf("template execute error: %v", err)
-	}
+
+	fmt.Println(string(bs))
 }
