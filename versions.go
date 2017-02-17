@@ -16,6 +16,7 @@ func listVersions(c *cli.Context) {
 		log.Fatalf("Request failed: %v", err)
 	}
 	table := tablewriter.NewWriter(os.Stdout)
+	table.SetColWidth(100)
 	table.SetHeader([]string{"Namespace", "Type", "Version", "Replicated?", "Internal?", "Regions"})
 	data := [][]string{}
 	for _, e := range v.Extensions {
