@@ -6,6 +6,8 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
+	"io/ioutil"
+	"strings"
 )
 
 // NOTE(@boumenot): there is probably a better way to express this.  If
@@ -25,7 +27,7 @@ import (
 //
 // I do not know how to express all three cases using Go's XML serializer.
 //
-type ExtensionImage struct {
+type extensionImage struct {
 	XMLName             string `xml:"ExtensionImage"`
 	NS                  string `xml:"xmlns,attr"`
 	ProviderNameSpace   string `xml:"ProviderNameSpace"`
@@ -45,7 +47,7 @@ type ExtensionImage struct {
 	Regions             string `xml:"Regions,omitempty"`
 }
 
-type ExtensionImageGlobal struct {
+type extensionImageGlobal struct {
 	XMLName             string `xml:"ExtensionImage"`
 	NS                  string `xml:"xmlns,attr"`
 	ProviderNameSpace   string `xml:"ProviderNameSpace"`
@@ -65,6 +67,56 @@ type ExtensionImageGlobal struct {
 	Regions             string `xml:"Regions"`
 }
 
+type extensionManifest interface {
+	Marshal() ([]byte, error)
+}
+
+func isGuestAgent(providerNameSpace string) bool {
+	return "Microsoft.OSTCLinuxAgent" == providerNameSpace
+}
+
+func newExtensionImageManifest(filename string, regions []string) (extensionManifest, error) {
+	b, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	var manifest extensionImage
+	err = xml.Unmarshal(b, &manifest)
+	if err != nil {
+		return nil, err
+	}
+
+	manifest.Regions = strings.Join(regions, ";")
+	manifest.IsInternalExtension = !isGuestAgent(manifest.ProviderNameSpace)
+
+	return &manifest, nil
+}
+
+func newExtensionImageGlobalManifest(filename string) (extensionManifest, error) {
+	b, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	var manifest extensionImageGlobal
+	err = xml.Unmarshal(b, &manifest)
+	if err != nil {
+		return nil, err
+	}
+
+	manifest.IsInternalExtension = !isGuestAgent(manifest.ProviderNameSpace)
+	return &manifest, nil
+}
+
+func (ext *extensionImage) Marshal() ([]byte, error) {
+	return xml.Marshal(*ext)
+}
+
+func (ext *extensionImageGlobal) Marshal() ([]byte, error) {
+	return xml.Marshal(*ext)
+}
+
 func newExtensionManifest(c *cli.Context) {
 	cl := mkClient(checkFlag(c, flMgtURL.Name), checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name))
 	storageRealm := checkFlag(c, flStorageRealm.Name)
@@ -78,7 +130,7 @@ func newExtensionManifest(c *cli.Context) {
 	}
 	log.Debugf("Extension package uploaded to: %s", blobURL)
 
-	manifest := ExtensionImage{
+	manifest := extensionImage{
 		ProviderNameSpace: checkFlag(c, flNamespace.Name),
 		Type: checkFlag(c, flName.Name),
 		Version: checkFlag(c, flVersion.Name),

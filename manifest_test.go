@@ -27,7 +27,7 @@ func TestRoundTripExtensionImage(t *testing.T) {
   <Regions>South Central US</Regions>
 </ExtensionImage>`)
 
-	var obj ExtensionImage
+	var obj extensionImage
 	err := xml.Unmarshal(xmlString, &obj)
 	if err != nil {
 		t.Fatal(err)
@@ -62,7 +62,7 @@ func TestSuppressRegionWhenEmpty(t *testing.T) {
   <SupportedOS>Linux</SupportedOS>
 </ExtensionImage>`)
 
-	var obj ExtensionImage
+	var obj extensionImage
 	err := xml.Unmarshal(xmlString, &obj)
 	if err != nil {
 		t.Fatal(err)
@@ -98,7 +98,7 @@ func TestRoundTripExtensionImageGlobal(t *testing.T) {
   <Regions></Regions>
 </ExtensionImage>`)
 
-	var obj ExtensionImageGlobal
+	var obj extensionImageGlobal
 	err := xml.Unmarshal(xmlString, &obj)
 	if err != nil {
 		t.Fatal(err)
