@@ -72,9 +72,9 @@ var (
 	flJSON = cli.BoolFlag{
 		Name:  "json",
 		Usage: "Print output as JSON"}
-    flIsXMLExtension = cli.BoolFlag{
-        Name:  "is-xml-extension",
-        Usage: "Set if this is an XML extension, i.e. PaaS"}
+	flIsXMLExtension = cli.BoolFlag{
+		Name:  "is-xml-extension",
+		Usage: "Set if this is an XML extension, i.e. PaaS"}
 )
 
 func main() {

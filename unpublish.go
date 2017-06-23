@@ -16,8 +16,8 @@ func unpublishVersion(c *cli.Context) {
 		Name:      checkFlag(c, flName.Name),
 		Version:   checkFlag(c, flVersion.Name)}
 
-    isXMLExtension := c.Bool(flIsXMLExtension.Name)
-    buf := bytes.NewBufferString(`<?xml version="1.0" encoding="utf-8" ?>
+	isXMLExtension := c.Bool(flIsXMLExtension.Name)
+	buf := bytes.NewBufferString(`<?xml version="1.0" encoding="utf-8" ?>
 <ExtensionImage xmlns="http://schemas.microsoft.com/windowsazure"  xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
   <!-- WARNING: Ordering of fields matter in this file. -->
   <ProviderNameSpace>{{.Namespace}}</ProviderNameSpace>
@@ -26,13 +26,13 @@ func unpublishVersion(c *cli.Context) {
   <IsInternalExtension>true</IsInternalExtension>
 `)
 
-    // All extension should be a JSON extension.  The biggest offenders are
-    // PaaS extensions.
-    if !isXMLExtension {
-        buf.WriteString("<IsJsonExtension>true</IsJsonExtension>")
-    }
+	// All extension should be a JSON extension.  The biggest offenders are
+	// PaaS extensions.
+	if !isXMLExtension {
+		buf.WriteString("<IsJsonExtension>true</IsJsonExtension>")
+	}
 
-    buf.WriteString("</ExtensionImage>")
+	buf.WriteString("</ExtensionImage>")
 	tpl, err := template.New("unregisterManifest").Parse(buf.String())
 	if err != nil {
 		log.Fatalf("template parse error: %v", err)
