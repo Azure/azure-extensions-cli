@@ -10,6 +10,11 @@ import (
 func promoteToRegions(c *cli.Context) {
 	regions := c.StringSlice(flRegion.Name)
 
+	if len(regions) == 0 {
+		log.Fatalf("At least one region must be specified!")
+		return
+	}
+
 	if err := promoteExtension(c, func() (extensionManifest, error) {
 		return newExtensionImageManifest(checkFlag(c, flManifest.Name), regions)
 	}); err != nil {

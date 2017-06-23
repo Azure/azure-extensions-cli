@@ -10,6 +10,13 @@ import (
 	"strings"
 )
 
+type certificate struct {
+	StoreLocation       string `xml:"StoreLocation,omitempty"`
+	StoreName           string `xml:"StoreName,omitempty"`
+	ThumbprintRequired  bool   `xml:"ThumbprintRequired,omitempty"`
+	ThumbprintAlgorithm string `xml:"ThumbprintAlgorithm,omitempty"`
+}
+
 // NOTE(@boumenot): there is probably a better way to express this.  If
 // you know please share...
 //
@@ -28,43 +35,51 @@ import (
 // I do not know how to express all three cases using Go's XML serializer.
 //
 type extensionImage struct {
-	XMLName             string `xml:"ExtensionImage"`
-	NS                  string `xml:"xmlns,attr"`
-	ProviderNameSpace   string `xml:"ProviderNameSpace"`
-	Type                string `xml:"Type"`
-	Version             string `xml:"Version"`
-	Label               string `xml:"Label"`
-	HostingResources    string `xml:"HostingResources"`
-	MediaLink           string `xml:"MediaLink"`
-	Description         string `xml:"Description"`
-	IsInternalExtension bool   `xml:"IsInternalExtension"`
-	Eula                string `xml:"Eula"`
-	PrivacyUri          string `xml:"PrivacyUri"`
-	HomepageUri         string `xml:"HomepageUri"`
-	IsJsonExtension     bool   `xml:"IsJsonExtension"`
-	CompanyName         string `xml:"CompanyName"`
-	SupportedOS         string `xml:"SupportedOS"`
-	Regions             string `xml:"Regions,omitempty"`
+	XMLName                    string       `xml:"ExtensionImage"`
+	NS                         string       `xml:"xmlns,attr"`
+	ProviderNameSpace          string       `xml:"ProviderNameSpace"`
+	Type                       string       `xml:"Type"`
+	Version                    string       `xml:"Version"`
+	Label                      string       `xml:"Label"`
+	HostingResources           string       `xml:"HostingResources"`
+	MediaLink                  string       `xml:"MediaLink"`
+	Certificate                *certificate `xml:"Certificate,omitempty"`
+	PublicConfigurationSchema  string       `xml:"PublicConfigurationSchema,omitempty"`
+	PrivateConfigurationSchema string       `xml:"PrivateConfigurationSchema,omitempty"`
+	Description                string       `xml:"Description"`
+	BlockRoleUponFailure       string       `xml:"BlockRoleUponFailure,omitempty"`
+	IsInternalExtension        bool         `xml:"IsInternalExtension"`
+	Eula                       string       `xml:"Eula,omitempty"`
+	PrivacyUri                 string       `xml:"PrivacyUri,omitempty"`
+	HomepageUri                string       `xml:"HomepageUri,omitempty"`
+	IsJsonExtension            bool         `xml:"IsJsonExtension,omitempty"`
+	CompanyName                string       `xml:"CompanyName,omitempty"`
+	SupportedOS                string       `xml:"SupportedOS,omitempty"`
+	Regions                    string       `xml:"Regions,omitempty"`
 }
 
 type extensionImageGlobal struct {
-	XMLName             string `xml:"ExtensionImage"`
-	NS                  string `xml:"xmlns,attr"`
-	ProviderNameSpace   string `xml:"ProviderNameSpace"`
-	Type                string `xml:"Type"`
-	Version             string `xml:"Version"`
-	Label               string `xml:"Label"`
-	HostingResources    string `xml:"HostingResources"`
-	MediaLink           string `xml:"MediaLink"`
-	Description         string `xml:"Description"`
-	IsInternalExtension bool   `xml:"IsInternalExtension"`
-	Eula                string `xml:"Eula"`
-	PrivacyUri          string `xml:"PrivacyUri"`
-	HomepageUri         string `xml:"HomepageUri"`
-	IsJsonExtension     bool   `xml:"IsJsonExtension"`
-	CompanyName         string `xml:"CompanyName"`
-	SupportedOS         string `xml:"SupportedOS"`
-	Regions             string `xml:"Regions"`
+	XMLName                    string       `xml:"ExtensionImage"`
+	NS                         string       `xml:"xmlns,attr"`
+	ProviderNameSpace          string       `xml:"ProviderNameSpace"`
+	Type                       string       `xml:"Type"`
+	Version                    string       `xml:"Version"`
+	Label                      string       `xml:"Label"`
+	HostingResources           string       `xml:"HostingResources"`
+	MediaLink                  string       `xml:"MediaLink"`
+	Certificate                *certificate `xml:"Certificate,omitempty"`
+	PublicConfigurationSchema  string       `xml:"PublicConfigurationSchema,omitempty"`
+	PrivateConfigurationSchema string       `xml:"PrivateConfigurationSchema,omitempty"`
+	Description                string       `xml:"Description"`
+	BlockRoleUponFailure       string       `xml:"BlockRoleUponFailure,omitempty"`
+	IsInternalExtension        bool         `xml:"IsInternalExtension"`
+	Eula                       string       `xml:"Eula,omitempty"`
+	PrivacyUri                 string       `xml:"PrivacyUri,omitempty"`
+	HomepageUri                string       `xml:"HomepageUri,omitempty"`
+	IsJsonExtension            bool         `xml:"IsJsonExtension,omitempty"`
+	CompanyName                string       `xml:"CompanyName,omitempty"`
+	SupportedOS                string       `xml:"SupportedOS,omitempty"`
+	Regions                    string       `xml:"Regions"`
 }
 
 type extensionManifest interface {
