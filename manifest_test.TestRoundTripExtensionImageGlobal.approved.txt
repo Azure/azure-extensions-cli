@@ -10,7 +10,7 @@
   <Eula>https://github.com/Azure/azure-linux-extensions/blob/master/LICENSE-2_0.txt</Eula>
   <PrivacyUri>http://www.microsoft.com/privacystatement/en-us/OnlineServices/Default.aspx</PrivacyUri>
   <HomepageUri>https://github.com/Azure/azure-linux-extensions</HomepageUri>
-  <IsJsonExtension>true</IsJsonExtension>
+  <IsJsonExtension>false</IsJsonExtension>
   <CompanyName>Microsoft</CompanyName>
   <SupportedOS>Linux</SupportedOS>
   <Regions></Regions>

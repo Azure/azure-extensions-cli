@@ -88,7 +88,12 @@ func newExtensionImageManifest(filename string, regions []string) (extensionMani
 	}
 
 	manifest.Regions = strings.Join(regions, ";")
-	manifest.IsInternalExtension = !isGuestAgent(manifest.ProviderNameSpace)
+
+	if !isGuestAgent(manifest.ProviderNameSpace) {
+		manifest.IsInternalExtension = false
+	} else {
+		log.Debug("VM agent namespace detected, IsInternalExtension ignored")
+	}
 
 	return &manifest, nil
 }
@@ -131,17 +136,18 @@ func newExtensionManifest(c *cli.Context) {
 	log.Debugf("Extension package uploaded to: %s", blobURL)
 
 	manifest := extensionImage{
-		ProviderNameSpace: checkFlag(c, flNamespace.Name),
-		Type:              checkFlag(c, flName.Name),
-		Version:           checkFlag(c, flVersion.Name),
-		Label:             "label",
-		Description:       "description",
-		MediaLink:         blobURL,
-		Eula:              "eula-url",
-		PrivacyUri:        "privacy-url",
-		HomepageUri:       "homepage-url",
-		CompanyName:       "company",
-		SupportedOS:       "supported-os",
+		ProviderNameSpace:   checkFlag(c, flNamespace.Name),
+		Type:                checkFlag(c, flName.Name),
+		Version:             checkFlag(c, flVersion.Name),
+		Label:               "label",
+		Description:         "description",
+		IsInternalExtension: true,
+		MediaLink:           blobURL,
+		Eula:                "eula-url",
+		PrivacyUri:          "privacy-url",
+		HomepageUri:         "homepage-url",
+		CompanyName:         "company",
+		SupportedOS:         "supported-os",
 	}
 
 	bs, err := xml.MarshalIndent(manifest, "", "  ")

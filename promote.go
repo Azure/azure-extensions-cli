@@ -1,17 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 )
 
-func promoteRegions(c *cli.Context) {
+func promoteToRegions(c *cli.Context) {
 	regions := c.StringSlice(flRegion.Name)
-
-	log.Info(fmt.Sprintf("regions=%s", strings.Join(regions, ";")))
 
 	if err := promoteExtension(c, func() (extensionManifest, error) {
 		return newExtensionImageManifest(checkFlag(c, flManifest.Name), regions)
@@ -19,7 +16,7 @@ func promoteRegions(c *cli.Context) {
 		log.Fatal(err)
 	}
 
-	log.Info("Extension is promoted to PROD in one region. See replication-status.")
+	log.Infof("Extension is promoted to PROD in %s. See replication-status.", strings.Join(regions, ","))
 }
 
 func promoteToAllRegions(c *cli.Context) {
