@@ -72,6 +72,9 @@ var (
 	flJSON = cli.BoolFlag{
 		Name:  "json",
 		Usage: "Print output as JSON"}
+	flIsXMLExtension = cli.BoolFlag{
+		Name:  "is-xml-extension",
+		Usage: "Set if this is an XML extension, i.e. PaaS"}
 )
 
 func main() {
@@ -139,7 +142,7 @@ func main() {
 			Action: replicationStatus},
 		{Name: "unpublish-version",
 			Usage:  "Marks the specified version of the extension internal. Does not delete.",
-			Flags:  []cli.Flag{flMgtURL, flSubsID, flSubsCert, flNamespace, flName, flVersion},
+			Flags:  []cli.Flag{flMgtURL, flSubsID, flSubsCert, flNamespace, flName, flVersion, flIsXMLExtension},
 			Action: unpublishVersion},
 		{Name: "delete-version",
 			Usage:  "Deletes the extension version. It should be unpublished first.",
