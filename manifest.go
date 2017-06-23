@@ -50,9 +50,9 @@ type extensionImage struct {
 	BlockRoleUponFailure       string       `xml:"BlockRoleUponFailure,omitempty"`
 	IsInternalExtension        bool         `xml:"IsInternalExtension"`
 	Eula                       string       `xml:"Eula,omitempty"`
-	PrivacyUri                 string       `xml:"PrivacyUri,omitempty"`
-	HomepageUri                string       `xml:"HomepageUri,omitempty"`
-	IsJsonExtension            bool         `xml:"IsJsonExtension,omitempty"`
+	PrivacyURI                 string       `xml:"PrivacyUri,omitempty"`
+	HomepageURI                string       `xml:"HomepageUri,omitempty"`
+	IsJSONExtension            bool         `xml:"IsJsonExtension,omitempty"`
 	CompanyName                string       `xml:"CompanyName,omitempty"`
 	SupportedOS                string       `xml:"SupportedOS,omitempty"`
 	Regions                    string       `xml:"Regions,omitempty"`
@@ -74,9 +74,9 @@ type extensionImageGlobal struct {
 	BlockRoleUponFailure       string       `xml:"BlockRoleUponFailure,omitempty"`
 	IsInternalExtension        bool         `xml:"IsInternalExtension"`
 	Eula                       string       `xml:"Eula,omitempty"`
-	PrivacyUri                 string       `xml:"PrivacyUri,omitempty"`
-	HomepageUri                string       `xml:"HomepageUri,omitempty"`
-	IsJsonExtension            bool         `xml:"IsJsonExtension,omitempty"`
+	PrivacyURI                 string       `xml:"PrivacyUri,omitempty"`
+	HomepageURI                string       `xml:"HomepageUri,omitempty"`
+	IsJSONExtension            bool         `xml:"IsJsonExtension,omitempty"`
 	CompanyName                string       `xml:"CompanyName,omitempty"`
 	SupportedOS                string       `xml:"SupportedOS,omitempty"`
 	Regions                    string       `xml:"Regions"`
@@ -159,8 +159,9 @@ func newExtensionManifest(c *cli.Context) {
 		IsInternalExtension: true,
 		MediaLink:           blobURL,
 		Eula:                "eula-url",
-		PrivacyUri:          "privacy-url",
-		HomepageUri:         "homepage-url",
+		PrivacyURI:          "privacy-url",
+		HomepageURI:         "homepage-url",
+		IsJSONExtension:     true,
 		CompanyName:         "company",
 		SupportedOS:         "supported-os",
 	}
