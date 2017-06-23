@@ -61,14 +61,10 @@ var (
 	flStorageAccount = cli.StringFlag{
 		Name:  "storage-account",
 		Usage: "Name of an existing storage account to be used in uploading the extension package temporarily."}
-	flRegion1 = cli.StringFlag{
-		Name:   "region-1",
-		Usage:  "Primary pilot location to roll out the extension (e.g. 'Japan East')",
-		EnvVar: "REGION1"}
-	flRegion2 = cli.StringFlag{
-		Name:   "region-2",
-		Usage:  "Primary pilot location to roll out the extension (e.g. 'Brazil South')",
-		EnvVar: "REGION2"}
+	flRegion = cli.StringSliceFlag{
+		Name:  "region",
+		Usage: "List of one or more regions to rollout an extension (e.g. 'Japan East')",
+	}
 	flJSON = cli.BoolFlag{
 		Name:  "json",
 		Usage: "Print output as JSON"}
@@ -120,14 +116,10 @@ func main() {
 			Usage:  "Publishes a new type of extension internally.",
 			Flags:  []cli.Flag{flMgtURL, flSubsID, flSubsCert, flManifest},
 			Action: updateExtension},
-		{Name: "promote-single-region",
-			Usage:  "Promote published internal extension to PROD in a Location.",
-			Flags:  []cli.Flag{flMgtURL, flSubsID, flSubsCert, flManifest, flRegion1},
-			Action: promoteToFirstSlice},
-		{Name: "promote-two-regions",
-			Usage:  "Promote published extension to PROD in two Locations.",
-			Flags:  []cli.Flag{flMgtURL, flSubsID, flSubsCert, flManifest, flRegion1, flRegion2},
-			Action: promoteToSecondSlice},
+		{Name: "promote",
+			Usage:  "Promote published internal extension to PROD in one or more locations.",
+			Flags:  []cli.Flag{flMgtURL, flSubsID, flSubsCert, flManifest, flRegion},
+			Action: promoteRegions},
 		{Name: "promote-all-regions",
 			Usage:  "Promote published extension to all Locations.",
 			Flags:  []cli.Flag{flMgtURL, flSubsID, flSubsCert, flManifest},

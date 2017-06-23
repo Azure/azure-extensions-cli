@@ -132,16 +132,16 @@ func newExtensionManifest(c *cli.Context) {
 
 	manifest := extensionImage{
 		ProviderNameSpace: checkFlag(c, flNamespace.Name),
-		Type: checkFlag(c, flName.Name),
-		Version: checkFlag(c, flVersion.Name),
-		Label: "label",
-		Description: "description",
-		MediaLink: blobURL,
-		Eula: "eula-url",
-		PrivacyUri: "privacy-url",
-		HomepageUri: "homepage-url",
-		CompanyName: "company",
-		SupportedOS: "supported-os",
+		Type:              checkFlag(c, flName.Name),
+		Version:           checkFlag(c, flVersion.Name),
+		Label:             "label",
+		Description:       "description",
+		MediaLink:         blobURL,
+		Eula:              "eula-url",
+		PrivacyUri:        "privacy-url",
+		HomepageUri:       "homepage-url",
+		CompanyName:       "company",
+		SupportedOS:       "supported-os",
 	}
 
 	bs, err := xml.MarshalIndent(manifest, "", "  ")
