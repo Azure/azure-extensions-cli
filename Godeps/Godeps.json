@@ -1,9 +1,7 @@
 {
-	"ImportPath": "github.com/ahmetalpbalkan/azure-extensions-cli",
+	"ImportPath": "github.com/Azure/azure-extensions-cli",
 	"GoVersion": "go1.5",
-	"Packages": [
-		"./..."
-	],
+	"GodepVersion": "v74",
 	"Deps": [
 		{
 			"ImportPath": "github.com/Azure/azure-sdk-for-go/Godeps/_workspace/src/golang.org/x/crypto/pkcs12",
@@ -34,6 +32,18 @@
 			"ImportPath": "github.com/Sirupsen/logrus",
 			"Comment": "v0.8.7-55-gf7f79f7",
 			"Rev": "f7f79f729e0fbe2fcc061db48a9ba0263f588252"
+		},
+		{
+			"ImportPath": "github.com/approvals/go-approval-tests",
+			"Rev": "6f75c0a8ecdf051e948b74b02f7929a4fd8915ca"
+		},
+		{
+			"ImportPath": "github.com/approvals/go-approval-tests/reporters",
+			"Rev": "6f75c0a8ecdf051e948b74b02f7929a4fd8915ca"
+		},
+		{
+			"ImportPath": "github.com/approvals/go-approval-tests/utils",
+			"Rev": "6f75c0a8ecdf051e948b74b02f7929a4fd8915ca"
 		},
 		{
 			"ImportPath": "github.com/codegangsta/cli",

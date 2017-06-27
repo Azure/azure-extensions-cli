@@ -55,23 +55,21 @@ USAGE:
    azure-extensions-cli [global options] command [command options] [arguments...]
 
 COMMANDS:
-   new-extension-manifest	Creates an XML file used to publish or update extension.
-   new-extension		Creates a new type of extension, not for releasing new versions.
-   new-extension-version	Publishes a new type of extension internally.
-   promote-single-region	Promote published internal extension to a PROD Location.
-   promote-two-regions		Promote published extension to two PROD Locations.
-   promote-to-prod		Promote published extension to all PROD Locations.
-   list-versions		Lists all published extension versions for subscription
+   new-extension-manifest   Creates an XML file used to publish or update extension.
+   new-extension		    Creates a new type of extension, not for releasing new versions.
+   new-extension-version    Publishes a new type of extension internally.
+   promote                  Promote published internal extension to one or more PROD Locations.
+   promote-all-regions      Promote published extension to all PROD Locations.
+   list-versions		    Lists all published extension versions for subscription
    replication-status		Retrieves replication status for an uploaded extension package
    unpublish-version		Marks the specified version of the extension internal. Does not delete.
-   delete-version		Deletes the extension version. It should be unpublished first.
-   help, h			Shows a list of commands or help for one command
+   delete-version		    Deletes the extension version. It should be unpublished first.
+   help, h	                Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
    --help, -h		show help
    --version, -v	print the version 
 ```
-
 
 ## Installing (or building from source)
 
@@ -81,10 +79,36 @@ If you need to compile from the source code, make sure you have Go compiler 1.6+
 Check out the project, set the GOPATH environment variable correctly (if necessary) and
 run `go build`. This should compile a binary.
 
-## Author
+## Overview
 
-Ahmet Alp Balkan
+The CLI makes it easy (easier) to publish an Azure extension.  An example workflow is provided below. This workflow 
+assumes an extension type already exists, which is why the command **new-extension-version** is used.  (If the type does 
+not exist use substitute for the command new-extension instead.)
 
+Not all command line parameters are shown for each command, only the salient options are shown.
+
+Step 1 - create an extension manifest.
+
+ 1. ./azure-extensions-cli new-extension-manifest
+
+Step 2 - publish an extension internally.
+
+ 1. ./azure-extensions-cli new-extension-version
+ 
+Step 3 - rollout the extension to Azure, by slowly including more and more regions.  It is recommended that you pause
+24 hours between regions.  
+
+> Every time a new region is added, the previous regions must be included with the promote command.
+ 
+ 1. ./azure-extensions-cli promote --region "West Central US"
+ 1. ./azure-extensions-cli promote --region "West Central US" --region "North US"
+ 1. ./azure-extensions-cli promote --region "West Central US" --region "North US" --region "West US"
+ 1. ./azure-extensions-cli promote ...
+ 
+Step 4 - promote the extension to all Azure regions.
+
+ 1. ./azure-extensions-cli promote-all-regions
+  
 ## TODO 
 
 - [ ] make `replication-status` exit with appropriate code if replication is not completed.

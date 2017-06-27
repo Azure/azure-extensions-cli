@@ -1,74 +1,53 @@
 package main
 
 import (
-	"bytes"
-	"fmt"
-	"io/ioutil"
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 )
 
-func promoteToFirstSlice(c *cli.Context) {
-	if err := promoteExtension(c, mkRegionElement(
-		checkFlag(c, flRegion1.Name))); err != nil {
+func promoteToRegions(c *cli.Context) {
+	regions := c.StringSlice(flRegion.Name)
+
+	if len(regions) == 0 {
+		log.Fatalf("At least one region must be specified!")
+		return
+	}
+
+	if err := promoteExtension(c, func() (extensionManifest, error) {
+		return newExtensionImageManifest(checkFlag(c, flManifest.Name), regions)
+	}); err != nil {
 		log.Fatal(err)
 	}
-	log.Info("Extension is promoted to PROD in one region. See replication-status.")
-}
-func promoteToSecondSlice(c *cli.Context) {
-	if err := promoteExtension(c, mkRegionElement(
-		checkFlag(c, flRegion1.Name),
-		checkFlag(c, flRegion2.Name))); err != nil {
-		log.Fatal(err)
-	}
-	log.Info("Extension is promoted to PROD in two regions. See replication-status.")
+
+	log.Infof("Extension is promoted to PROD in %s. See replication-status.", strings.Join(regions, ","))
 }
 
 func promoteToAllRegions(c *cli.Context) {
-	regions := `` // replace placeholder with empty string to omit the element.
-	if err := promoteExtension(c, regions); err != nil {
+	if err := promoteExtension(c, func() (extensionManifest, error) {
+		return newExtensionImageGlobalManifest(checkFlag(c, flManifest.Name))
+	}); err != nil {
 		log.Fatal(err)
 	}
+
 	log.Info("Extension is promoted to all regions. See replication-status.")
 }
 
-func promoteExtension(c *cli.Context, regionsXML string) error {
-	b, err := updateManifestRegions(checkFlag(c, flManifest.Name), regionsXML)
+func promoteExtension(c *cli.Context, factory func() (extensionManifest, error)) error {
+	manifest, err := factory()
 	if err != nil {
 		return err
 	}
+
+	b, err := manifest.Marshal()
+	if err != nil {
+		return err
+	}
+
 	if err := publishExtension(c, "UpdateExtension", b,
 		mkClient(checkFlag(c, flMgtURL.Name), checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name)).UpdateExtension); err != nil {
 		return err
 	}
 	return nil
-}
-
-func mkRegionElement(regions ...string) string {
-	return fmt.Sprintf(`<Regions>%s</Regions>`, strings.Join(regions, ";"))
-}
-
-// updateManifestRegions makes an in-memory update to the <!--%REGIONS%-->
-// placeholder string in the manifest XML for further usage, and
-// sets <IsInternalExtension> according to whether the package
-// should remain internal (vm agent) or not (extensions)
-func updateManifestRegions(manifestPath string, regionsXMLElement string) ([]byte, error) {
-	b, err := ioutil.ReadFile(manifestPath)
-	if err != nil {
-		return nil, fmt.Errorf("Error reading manifest: %v", err)
-	}
-
-	// todo: improve this
-	b = bytes.Replace(b, []byte(`<!--%REGIONS%-->`), []byte(regionsXMLElement), 1)
-
-	updateInternal := !bytes.Contains(b, []byte(`<ProviderNameSpace>Microsoft.OSTCLinuxAgent</ProviderNameSpace>`))
-	if updateInternal {
-		b = bytes.Replace(b, []byte(`<IsInternalExtension>true`), []byte(`<IsInternalExtension>false`), 1)
-	} else {
-		log.Debug("VM agent namespace detected, IsInternalExtension ignored")
-	}
-
-	return b, err
 }
