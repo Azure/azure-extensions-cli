@@ -27,6 +27,7 @@ you can simply set environment variables:
 
     export SUBSCRIPTION_ID=xxxx-xxxxx-xxxxxx...
     export SUBSCRIPTION_CERT=/path/to/cert.pem
+    export MANAGEMENT_URL=https://management.core.windows.net
 
 If you are always operating on the same extension, you can also set:
 
