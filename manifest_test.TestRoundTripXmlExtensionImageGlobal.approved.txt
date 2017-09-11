@@ -4,6 +4,7 @@
   <Version>4.3.2.1</Version>
   <Label>Microsoft Azure Custom Script Extension for Linux Virtual Machines</Label>
   <HostingResources>WebRole|WorkerRole</HostingResources>
+  <Endpoints></Endpoints>
   <MediaLink>http://localhost/extension.zip</MediaLink>
   <Certificate>
     <StoreLocation>LocalMachine</StoreLocation>
@@ -14,6 +15,7 @@
   <PublicConfigurationSchema>--public-configuration-schema--</PublicConfigurationSchema>
   <PrivateConfigurationSchema>--private-configuration-schema--</PrivateConfigurationSchema>
   <Description>Please consider using Microsoft.Azure.Extensions.CustomScript instead.</Description>
+  <LocalResources></LocalResources>
   <BlockRoleUponFailure>false</BlockRoleUponFailure>
   <IsInternalExtension>true</IsInternalExtension>
   <Eula>https://github.com/Azure/azure-linux-extensions/blob/master/LICENSE-2_0.txt</Eula>
