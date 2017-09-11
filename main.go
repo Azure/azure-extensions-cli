@@ -77,8 +77,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "azure-extensions-cli"
 	app.Version = GitSummary
-	app.Usage = "This tool is designed for Microsoft internal extension publishers to release, update and manage Virtual Machine extensions."
-	app.Authors = []cli.Author{{Name: "Ahmet Alp Balkan", Email: "ahmetb at microsoft döt com"}}
+	app.Usage = "This tool is designed for Microsoft extension publishers to release, update and manage Virtual Machine extensions."
 	app.Commands = []cli.Command{
 		{Name: "new-extension-manifest",
 			Usage:  "Creates an XML file used to publish or update extension.",
