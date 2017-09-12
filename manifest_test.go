@@ -174,3 +174,13 @@ func TestRoundTripXmlExtensionImageGlobal(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestIsGuestAgent(t *testing.T) {
+	if !isGuestAgent("Microsoft.OSTCLinuxAgent") {
+		t.Error("true if namespace == \"Microsoft.OSTCAgentLinux\"")
+	}
+
+	if isGuestAgent("Is.Fake.Namespace") {
+		t.Error("true if namespace != \"Microsoft.OSTCAgentLinux\"")
+	}
+}
