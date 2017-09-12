@@ -109,12 +109,7 @@ func newExtensionImageManifest(filename string, regions []string) (extensionMani
 	}
 
 	manifest.Regions = strings.Join(regions, ";")
-
-	if !isGuestAgent(manifest.ProviderNameSpace) {
-		manifest.IsInternalExtension = false
-	} else {
-		log.Debug("VM agent namespace detected, IsInternalExtension ignored")
-	}
+	manifest.IsInternalExtension = isGuestAgent(manifest.ProviderNameSpace)
 
 	return &manifest, nil
 }
@@ -131,7 +126,7 @@ func newExtensionImageGlobalManifest(filename string) (extensionManifest, error)
 		return nil, err
 	}
 
-	manifest.IsInternalExtension = !isGuestAgent(manifest.ProviderNameSpace)
+	manifest.IsInternalExtension = isGuestAgent(manifest.ProviderNameSpace)
 	return &manifest, nil
 }
 
