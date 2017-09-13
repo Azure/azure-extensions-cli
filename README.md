@@ -102,13 +102,52 @@ Step 3 - rollout the extension to Azure, by slowly including more and more regio
 > Every time a new region is added, the previous regions must be included with the promote command.
  
  1. ./azure-extensions-cli promote --region "West Central US"
- 1. ./azure-extensions-cli promote --region "West Central US" --region "North US"
- 1. ./azure-extensions-cli promote --region "West Central US" --region "North US" --region "West US"
+ 1. ./azure-extensions-cli promote --region "West Central US" --region "North Central US"
+ 1. ./azure-extensions-cli promote --region "West Central US" --region "North Central US" --region "West US"
  1. ./azure-extensions-cli promote ...
  
 Step 4 - promote the extension to all Azure regions.
 
  1. ./azure-extensions-cli promote-all-regions
+
+### Regions
+
+As of 13-Sept-2017 this is the list of regions available for the
+public cloud.  azure-extensions-cli uses the Service Management
+regions.  (The equivalent Resource Manager (RM or ARM) regions
+equivalents are also provided, but are not **yet** supported.)
+
+| Service Management  | Resource Manager   |
+|---------------------|--------------------|
+| Australia East      | australiaeast      |
+| Australia Southeast | australiasoutheast |
+| Brazil South        | brazilsouth        |
+| Canada Central      | canadacentral      |
+| Canada East         | canadaeast         |
+| Central India       | centralindia       |
+| Central US          | centralus          |
+| Central US EUAP     | centraluseuap      |
+| East Asia           | eastasia           |
+| East US             | eastus             |
+| East US 2           | eastus2            |
+| East US 2 EUAP      | eastus2euap        |
+| Japan East          | japaneast          |
+| Japan West          | japanwest          |
+| Korea Central       | koreacentral       |
+| Korea South         | koreasouth         |
+| North Central US    | northcentralus     |
+| North Europe        | northeurope        |
+| South Central US    | southcentralus     |
+| South India         | southindia         |
+| Southeast Asia      | southeastasia      |
+| UK South            | uksouth            |
+| UK West             | ukwest             |
+| West Central US     | westcentra         |
+| West Europe         | westeurope         |
+| West India          | westindia          |
+| West US             | westus             |
+| West US 2           | westus2            |
+
   
 ## TODO 
 
