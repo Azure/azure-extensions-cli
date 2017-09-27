@@ -1,16 +1,15 @@
 sudo: false
 language: go
-go: go1.7
+go: go1.9
 install:
 - go get -u github.com/golang/lint/golint
 - go get -u github.com/mitchellh/gox
 - go get -u github.com/ahmetalpbalkan/govvv
+- go get -u gopkg.in/alecthomas/gometalinter.v1
+- gometalinter.v1 --install
 script:
-- test -z "$(gofmt -s -l -w $(find . -type f -name '*.go' -not -path './vendor/*')
-  | tee /dev/stderr)"
-- test -z "$(golint . | tee /dev/stderr)"
-- test -z "$(go vet -v $(go list ./... | grep -v '/vendor/') | tee /dev/stderr)"
-- go list ./... | grep -v '/vendor/' | xargs go test -v -cover
+- test -z "$(gometalinter.v1 --deadline=10m --tests --vendor --disable-all --enable=misspell --enable=vet --enable=ineffassign --enable=gofmt --enable=gocyclo --cyclo-over=15 --enable=golint --enable=deadcode --enable=varcheck --enable=structcheck --enable=unused ./...)"
+- go test -v -cover .
 - gox -gocmd=govvv -os="linux darwin windows" -arch="amd64"
 deploy:
   provider: releases
