@@ -77,7 +77,7 @@ func (client client) sendAzureRequest(method, url, contentType string, data []by
 		return nil, err
 	}
 
-	response, err := client.sendRequest(httpClient, url, method, contentType, data, 5)
+	response, err := client.sendRequest(httpClient, url, method, contentType, data, 0)
 	if err != nil {
 		return nil, err
 	}
