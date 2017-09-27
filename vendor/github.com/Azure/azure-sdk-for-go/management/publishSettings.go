@@ -1,3 +1,5 @@
+// +build go1.7
+
 package management
 
 import (
@@ -7,7 +9,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/Azure/azure-sdk-for-go/Godeps/_workspace/src/golang.org/x/crypto/pkcs12"
+	"golang.org/x/crypto/pkcs12"
 )
 
 // ClientFromPublishSettingsData unmarshalls the contents of a publish settings file
@@ -61,6 +63,9 @@ func ClientFromPublishSettingsDataWithConfig(data []byte, subscriptionID string,
 				}
 
 				pems, err := pkcs12.ToPEM(pfxData, "")
+				if err != nil {
+					return client, err
+				}
 
 				cert := []byte{}
 				for _, b := range pems {

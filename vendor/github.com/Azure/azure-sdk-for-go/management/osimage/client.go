@@ -1,3 +1,5 @@
+// +build go1.7
+
 // Package osimage provides a client for Operating System Images.
 package osimage
 
@@ -28,4 +30,17 @@ func (c OSImageClient) ListOSImages() (ListOSImagesResponse, error) {
 
 	err = xml.Unmarshal(response, &l)
 	return l, err
+}
+
+// AddOSImage adds an operating system image to the image repository that is associated with the specified subscription.
+//
+// See https://msdn.microsoft.com/en-us/library/azure/jj157192.aspx for details.
+func (c OSImageClient) AddOSImage(osi *OSImage) (management.OperationID, error) {
+	data, err := xml.Marshal(osi)
+	if err != nil {
+		return "", err
+	}
+
+	return c.client.SendAzurePostRequest(azureImageListURL, data)
+
 }
