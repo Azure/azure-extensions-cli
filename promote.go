@@ -45,9 +45,6 @@ func promoteExtension(c *cli.Context, factory func() (extensionManifest, error))
 		return err
 	}
 
-	if err := publishExtension(c, "UpdateExtension", b,
-		mkClient(checkFlag(c, flMgtURL.Name), checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name)).UpdateExtension); err != nil {
-		return err
-	}
-	return nil
+	return publishExtension(c, "UpdateExtension", b,
+		mkClient(checkFlag(c, flMgtURL.Name), checkFlag(c, flSubsID.Name), checkFlag(c, flSubsCert.Name)).UpdateExtension)
 }
