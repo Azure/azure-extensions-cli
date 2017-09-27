@@ -1,5 +1,7 @@
 # azure-extensions-cli
 
+```ignored```
+
 :warning::warning:  This tool is intended only for publishers of Azure VM 
 extensions. If you are not an Azure employee or a whitelisted extension
 publisher, there is nothing here for you.
