@@ -15,8 +15,10 @@ func promoteToRegions(c *cli.Context) {
 		return
 	}
 
+	normalizedRegions := normalizeRegionList(regions)
+
 	if err := promoteExtension(c, func() (extensionManifest, error) {
-		return newExtensionImageManifest(checkFlag(c, flManifest.Name), regions)
+		return newExtensionImageManifest(checkFlag(c, flManifest.Name), normalizedRegions)
 	}); err != nil {
 		log.Fatal(err)
 	}
