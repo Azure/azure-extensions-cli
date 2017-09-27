@@ -1,13 +1,17 @@
 package main
 
 import (
+	"bytes"
+	"encoding/pem"
 	"io/ioutil"
 	"os"
 
 	"github.com/Azure/azure-sdk-for-go/management"
 	"github.com/Azure/azure-sdk-for-go/storage"
-	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
+	"golang.org/x/crypto/pkcs12"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 var (
@@ -45,7 +49,7 @@ var (
 	}
 	flSubsCert = cli.StringFlag{
 		Name:   "subscription-cert",
-		Usage:  "Path of subscription management certificate (.pem) file",
+		Usage:  "Path of subscription management certificate (.pem or .pfx) file",
 		EnvVar: "SUBSCRIPTION_CERT"}
 	flVersion = cli.StringFlag{
 		Name:  "version",
@@ -77,7 +81,8 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "azure-extensions-cli"
 	app.Version = GitSummary
-	app.Usage = "This tool is designed for Microsoft extension publishers to release, update and manage Virtual Machine extensions."
+	app.Usage = "This tool is designed for Microsoft internal extension publishers to release, update and manage Virtual Machine extensions."
+	app.Authors = []cli.Author{{Name: "Ahmet Alp Balkan", Email: "ahmetb at microsoft döt com"}}
 	app.Commands = []cli.Command{
 		{Name: "new-extension-manifest",
 			Usage:  "Creates an XML file used to publish or update extension.",
@@ -144,7 +149,7 @@ func main() {
 }
 
 func mkClient(mgtURL, subscriptionID, certFile string) ExtensionsClient {
-	b, err := ioutil.ReadFile(certFile)
+	b, err := readCert(certFile)
 	if err != nil {
 		log.Fatalf("Cannot read certificate %s: %v", certFile, err)
 	}
@@ -153,6 +158,30 @@ func mkClient(mgtURL, subscriptionID, certFile string) ExtensionsClient {
 		log.Fatalf("Cannot create client: %v", err)
 	}
 	return cl
+}
+
+func readCert(certFile string) ([]byte, error) {
+	b, err := ioutil.ReadFile(certFile)
+	if err != nil {
+		return nil, err
+	}
+
+	p, _ := pem.Decode(b)
+	if p != nil {
+		return b, nil
+	}
+
+	pemBlocks, err := pkcs12.ToPEM(b, "")
+	if err != nil {
+		return nil, err
+	}
+
+	var buf bytes.Buffer
+	for _, x := range pemBlocks {
+		buf.Write(pem.EncodeToMemory(x))
+	}
+
+	return buf.Bytes(), nil
 }
 
 func checkFlag(c *cli.Context, fl string) string {
