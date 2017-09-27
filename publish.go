@@ -97,10 +97,6 @@ func uploadBlob(cl ExtensionsClient, storageRealm, storageAccount, packagePath s
 	if err != nil {
 		return "", fmt.Errorf("Could not reach package file: %v", err)
 	}
-	stat, err := pkg.Stat()
-	if err != nil {
-		return "", fmt.Errorf("Could not stat the package file: %v", err)
-	}
 	defer pkg.Close()
 
 	// Upload blob
@@ -108,13 +104,20 @@ func uploadBlob(cl ExtensionsClient, storageRealm, storageAccount, packagePath s
 	if err != nil {
 		return "", fmt.Errorf("Could not create storage client: %v", err)
 	}
+
 	bs := sc.GetBlobService()
-	if _, err := bs.CreateContainerIfNotExists(containerName, storage.ContainerAccessTypeBlob); err != nil {
+	container := bs.GetContainerReference(containerName)
+	opts := storage.CreateContainerOptions{
+		Access: storage.ContainerAccessTypeBlob,
+	}
+
+	if _, err := container.CreateIfNotExists(&opts); err != nil {
 		return "", fmt.Errorf("Error creating blob container: %v", err)
 	}
 	blobName := fmt.Sprintf("%d.zip", time.Now().Unix())
-	if err := bs.CreateBlockBlobFromReader(containerName, blobName, uint64(stat.Size()), pkg, nil); err != nil {
+	blob := container.GetBlobReference(blobName)
+	if err := blob.CreateBlockBlobFromReader(pkg, &storage.PutBlobOptions{}); err != nil {
 		return "", fmt.Errorf("Error uploading blob: %v", err)
 	}
-	return bs.GetBlobURL(containerName, blobName), nil
+	return blob.GetURL(), nil
 }
