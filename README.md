@@ -119,9 +119,7 @@ Step 4 - promote the extension to all Azure regions.
 ### Regions
 
 As of 13-Sept-2017 this is the list of regions available for the
-public cloud.  azure-extensions-cli uses the Service Management
-regions.  (The equivalent Resource Manager (RM or ARM) regions
-equivalents are also provided, but are not **yet** supported.)
+public cloud.
 
 | Service Management  | Resource Manager   |
 |---------------------|--------------------|
