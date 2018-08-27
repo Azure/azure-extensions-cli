@@ -59,6 +59,7 @@ type extensionImage struct {
 	CompanyName                 string       `xml:"CompanyName,omitempty"`
 	SupportedOS                 string       `xml:"SupportedOS,omitempty"`
 	Regions                     string       `xml:"Regions,omitempty"`
+	Boumenot                    string       `xml:"Regions,omitempty"`
 }
 
 type extensionImageGlobal struct {
