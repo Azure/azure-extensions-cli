@@ -29,6 +29,12 @@ you can simply set environment variables:
     export SUBSCRIPTION_CERT=/path/to/cert.pem
     export MANAGEMENT_URL=https://management.core.windows.net
 
+Please use the following management URLs to cloud mappings:
+  * Global :: https://management.core.windows.net
+  * China :: https://management.core.chinacloudapi.cn
+  * Germany :: https://management.core.cloudapi.de
+  * US Government :: https://management.core.usgovcloudapi.net
+
 If you are always operating on the same extension, you can also set:
 
     export EXTENSION_NAMESPACE=Microsoft.Azure.Extensions
