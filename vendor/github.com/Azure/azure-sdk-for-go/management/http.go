@@ -72,12 +72,7 @@ func (client client) sendAzureRequest(method, url, contentType string, data []by
 		return nil, fmt.Errorf(errParamNotSpecified, "url")
 	}
 
-	httpClient, err := client.createHTTPClient()
-	if err != nil {
-		return nil, err
-	}
-
-	response, err := client.sendRequest(httpClient, url, method, contentType, data, 0)
+	response, err := client.sendRequest(client.httpClient, url, method, contentType, data, 0)
 	if err != nil {
 		return nil, err
 	}
