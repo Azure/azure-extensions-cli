@@ -85,12 +85,18 @@ func (c ExtensionsClient) GetReplicationStatus(publisherNamespace, extension,
 // CreateExtension sends the given extension handler definition XML to create a
 // brand new extension (not a version). Returned operation ID should be polled for result.
 func (c ExtensionsClient) CreateExtension(data []byte) (management.OperationID, error) {
+	fmt.Println("listing version")
+	c.ListVersions()
+	fmt.Println("list version finished")
 	return c.client.SendAzurePostRequest("services/extensions", data)
 }
 
 // UpdateExtension sends the given extension handler definition XML to issue and update
 // request. Returned operation ID should be polled for result.
 func (c ExtensionsClient) UpdateExtension(data []byte) (management.OperationID, error) {
+	fmt.Println("listing version")
+	c.ListVersions()
+	fmt.Println("list version finished")
 	return c.client.SendAzurePutRequest("services/extensions?action=update", "text/xml", data)
 }
 
