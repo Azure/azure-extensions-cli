@@ -92,6 +92,8 @@ The CLI makes it easy (easier) to publish an Azure extension.  An example workfl
 assumes an extension type already exists, which is why the command **new-extension-version** is used.  (If the type does 
 not exist use substitute for the command new-extension instead.)
 
+> **NOTE:** The storage account MUST be a Classic Storage Account, and the blob folder should be private.
+
 Not all command line parameters are shown for each command, only the salient options are shown.
 
 Step 1 - create an extension manifest.
