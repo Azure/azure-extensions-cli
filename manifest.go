@@ -4,8 +4,8 @@ import (
 	"encoding/xml"
 	"fmt"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
+	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"strings"
 )

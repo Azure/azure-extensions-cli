@@ -10,8 +10,8 @@ import (
 	"github.com/Azure/azure-sdk-for-go/management"
 	"github.com/Azure/azure-sdk-for-go/management/storageservice"
 	"github.com/Azure/azure-sdk-for-go/storage"
-	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
+	log "github.com/sirupsen/logrus"
 )
 
 const (

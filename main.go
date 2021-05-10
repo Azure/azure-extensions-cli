@@ -11,7 +11,7 @@ import (
 	"github.com/codegangsta/cli"
 	"golang.org/x/crypto/pkcs12"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 var (

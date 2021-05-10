@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 	"github.com/olekukonko/tablewriter"
+	log "github.com/sirupsen/logrus"
 )
 
 func replicationStatus(c *cli.Context) {

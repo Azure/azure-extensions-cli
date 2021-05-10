@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/Azure/azure-sdk-for-go/management"
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 const (

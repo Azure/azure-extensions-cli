@@ -14,7 +14,7 @@
   version = "v8.4.0"
 
 [[projects]]
-  name = "github.com/Sirupsen/logrus"
+  name = "github.com/sirupsen/logrus"
   packages = ["."]
   revision = "f7f79f729e0fbe2fcc061db48a9ba0263f588252"
 

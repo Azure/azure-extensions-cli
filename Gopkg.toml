@@ -25,7 +25,7 @@
   name = "github.com/Azure/azure-sdk-for-go"
 
 [[constraint]]
-  name = "github.com/Sirupsen/logrus"
+  name = "github.com/sirupsen/logrus"
 
 [[constraint]]
   name = "github.com/approvals/go-approval-tests"

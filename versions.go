@@ -5,9 +5,9 @@ import (
 	"os"
 
 	"encoding/json"
-	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 	"github.com/olekukonko/tablewriter"
+	log "github.com/sirupsen/logrus"
 )
 
 func listVersions(c *cli.Context) {
